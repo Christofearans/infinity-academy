@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard - High School</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+    }
+    header {
+      background: #333;
+      color: #fff;
+      padding: 10px 20px;
+      text-align: center;
+    }
+    .container {
+      margin: 20px;
+    }
+    .section {
+      margin-bottom: 30px;
+      padding: 15px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .section h2 {
+      margin-top: 0;
+    }
+    .announcement-item {
+      margin-bottom: 10px;
+      padding: 10px;
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    footer {
+      background: #333;
+      color: #fff;
+      text-align: center;
+      padding: 10px;
+      margin-top: 20px;
+    }
+    .material-item {
+      margin-bottom: 10px;
+      padding: 10px;
+      background: #e9f7ff;
+      border: 1px solid #b3d8ff;
+      border-radius: 5px;
+    }
+    .material-item a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    .material-item a:hover {
+      text-decoration: underline;
+    }
+    .subject-folder {
+      margin-bottom: 20px;
+    }
+    .subject-folder h3 {
+      background-color: #007bff;
+      color: #fff;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .material-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .material-category {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #333;
+    }
+    .category-items {
+      margin-left: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Student Dashboard - High School</h1>
+  <p>Welcome to Infinity Academy</p>
+</header>
+
+<div class="container">
+  <!-- Subject Selection -->
+  <div class="section" id="subject-selection">
+    <h2>Select Your Major Subjects</h2>
+    <form id="subject-form">
+      <label><input type="checkbox" name="subject" value="mathematics"> Mathematics</label><br>
+      <label><input type="checkbox" name="subject" value="maths-lit"> Maths Lit</label><br>
+      <label><input type="checkbox" name="subject" value="physical-sciences"> Physical Sciences</label><br>
+      <label><input type="checkbox" name="subject" value="life-sciences"> Life Sciences</label><br>
+      <label><input type="checkbox" name="subject" value="agricultural-sciences"> Agricultural Sciences</label><br>
+      <label><input type="checkbox" name="subject" value="history"> History</label><br>
+      <label><input type="checkbox" name="subject" value="geography"> Geography</label><br>
+      <label><input type="checkbox" name="subject" value="fal"> FAL</label><br>
+      <label><input type="checkbox" name="subject" value="hl"> HL</label><br>
+      <label><input type="checkbox" name="subject" value="lo"> LO</label><br>
+      <label><input type="checkbox" name="subject" value="accounting"> Accounting</label><br>
+      <label><input type="checkbox" name="subject" value="business-studies"> Business Studies</label><br>
+      <label><input type="checkbox" name="subject" value="economics"> Economics</label><br>
+      <button type="button" onclick="saveSelectedSubjects()">Save Selected Subjects</button>
+    </form>
+  </div>
+
+  <!-- Subject Display Message -->
+  <div class="section" id="subject-display" style="display: none;">
+    <h2>Major Subjects Added</h2>
+    <p id="subject-message">You haven't selected any subjects yet.</p>
+    <button type="button" id="add-subjects-btn" onclick="toggleSubjectSelection()">Add More Subjects</button>
+  </div>
+
+  <!-- Study Materials Section -->
+  <div class="section" id="study-materials">
+    <h2>Study Materials</h2>
+    <div id="material-list" class="material-list">
+      <!-- Materials will be dynamically inserted here -->
+    </div>
+  </div>
+</div>
+
+<footer>
+  &copy; 2024 Infinity Academy - Student Dashboard
+</footer>
+<script>
+    async function getDataFromBackend(endpoint) {
+      try {
+        const response = await fetch(`http://localhost:3000/api/${endpoint}`);
+        if (response.ok) {
+          return await response.json();
+        } else {
+          console.error(`Failed to fetch ${endpoint}`);
+          return [];
+        }
+      } catch (error) {
+        console.error(`Error fetching ${endpoint}:`, error);
+        return [];
+      }
+    }
+  
+    async function saveSelectedSubjects() {
+      const selectedSubjects = Array.from(document.querySelectorAll('input[name="subject"]:checked')).map(input => input.value);
+      try {
+        const response = await fetch('http://localhost:3000/api/selectedSubjects', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ selectedSubjects }),
+        });
+        if (response.ok) {
+          updateSubjectDisplay();
+          loadSubjectMaterials();
+        } else {
+          alert('Failed to save selected subjects.');
+        }
+      } catch (error) {
+        console.error('Error saving selected subjects:', error);
+      }
+    }
+  
+    async function updateSubjectDisplay() {
+      const selectedSubjects = await getDataFromBackend('selectedSubjects');
+      const subjectDisplay = document.getElementById('subject-display');
+      const subjectSelection = document.getElementById('subject-selection');
+      const subjectMessage = document.getElementById('subject-message');
+  
+      subjectSelection.style.display = 'none';
+      subjectDisplay.style.display = 'block';
+  
+      if (selectedSubjects.length > 0) {
+        subjectMessage.textContent = 'Your major subjects: ' + selectedSubjects.join(', ');
+      } else {
+        subjectMessage.textContent = 'You haven\'t selected any subjects yet.';
+      }
+    }
+  
+    function toggleSubjectSelection() {
+      const subjectSelection = document.getElementById('subject-selection');
+      const subjectDisplay = document.getElementById('subject-display');
+      subjectSelection.style.display = subjectSelection.style.display === 'none' ? 'block' : 'none';
+      subjectDisplay.style.display = subjectDisplay.style.display === 'none' ? 'block' : 'none';
+    }
+  
+    async function loadSubjectMaterials() {
+      const selectedSubjects = await getDataFromBackend('selectedSubjects');
+      const materials = await getDataFromBackend('studyMaterials');
+      const filteredMaterials = materials.filter(material => selectedSubjects.includes(material.subject));
+  
+      const materialList = document.getElementById('material-list');
+      materialList.innerHTML = '';
+  
+      if (filteredMaterials.length === 0) {
+        materialList.innerHTML = '<p>No materials uploaded for the selected subjects.</p>';
+        return;
+      }
+  
+      selectedSubjects.forEach(subject => {
+        const subjectFolder = document.createElement('div');
+        subjectFolder.classList.add('subject-folder');
+        const subjectMaterials = filteredMaterials.filter(material => material.subject === subject);
+  
+        if (subjectMaterials.length > 0) {
+          subjectFolder.innerHTML = `
+            <h3>${subject.charAt(0).toUpperCase() + subject.slice(1).replace('-', ' ')}</h3>
+            ${groupMaterialsByType(subjectMaterials).join('')}
+          `;
+          materialList.appendChild(subjectFolder);
+        }
+      });
+    }
+  
+    function groupMaterialsByType(materials) {
+      const grouped = {};
+  
+      materials.forEach(material => {
+        if (!grouped[material.type]) grouped[material.type] = [];
+        grouped[material.type].push(material);
+      });
+  
+      return Object.keys(grouped).map(type => `
+        <div class="material-category">${type.charAt(0).toUpperCase() + type.slice(1)}</div>
+        <div class="category-items">
+          ${grouped[type].map(material => `
+            <div class="material-item">
+              <strong>${material.title}</strong><br>
+              <a href="${material.link}" target="_blank">View Material</a>
+            </div>
+          `).join('')}
+        </div>
+      `);
+    }
+  
+    document.addEventListener('DOMContentLoaded', () => {
+      updateSubjectDisplay();
+      loadSubjectMaterials();
+    });
+  </script>
+  
+</body>
+</html>

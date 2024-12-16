@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard</title>
+  <style>
+    /* General Styles */
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f9fafc;
+  color: #333;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #0056b3;
+  color: #fff;
+  padding: 15px;
+}
+
+header img {
+  height: 50px;
+}
+
+header .greeting {
+  font-size: 1.2rem;
+}
+
+.container {
+  margin: 20px auto;
+  max-width: 1200px;
+}
+
+.section {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.section h2 {
+  margin-top: 0;
+  font-size: 1.5rem;
+  color: #0056b3;
+  border-bottom: 2px solid #f4f4f4;
+  padding-bottom: 10px;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.item-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.time-info {
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.item a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.item a:hover {
+  text-decoration: underline;
+}
+
+.columns {
+  display: flex;
+  gap: 20px;
+}
+
+.column {
+  flex: 1;
+}
+
+.logout-btn {
+  background: #dc3545;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 20px;
+  display: inline-block;
+}
+
+.logout-btn:hover {
+  background: #c82333;
+}
+
+.title-link {
+  color: #0056b3;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.title-link:hover {
+  text-decoration: underline;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .columns {
+    flex-direction: column;
+  }
+
+  button, .logout-btn {
+    width: 100%;
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  header {
+    padding: 10px;
+  }
+
+  .section h2 {
+    font-size: 1.2rem;
+  }
+
+  button, .logout-btn {
+    padding: 10px;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Infinity Academy Logo">
+    <div class="greeting" id="greeting"></div>
+  </header>
+
+  <div class="container">
+    <!-- Online Class Links Section -->
+    <div class="section" id="online-class-links">
+      <h2>Online Class Links</h2>
+      <div id="class-links-list"></div>
+    </div>
+
+    <!-- Two-Column Layout -->
+    <div class="columns">
+      <!-- Left Column -->
+      <div class="column">
+        <div class="section" id="online-class-recordings">
+          <h2>Online Class Recordings</h2>
+          <div id="class-recordings-list"></div>
+        </div>
+        <div class="section" id="past-papers">
+          <h2>Past Papers</h2>
+          <div id="past-papers-list"></div>
+        </div>
+      </div>
+
+      <!-- Right Column -->
+      <div class="column">
+        <div class="section" id="study-materials">
+          <h2>Study Materials</h2>
+          <div id="study-materials-list"></div>
+        </div>
+        <div class="section" id="online-quizzes">
+          <h2>Online Quizzes</h2>
+          <div id="quizzes-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Logout Button -->
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+
+  <script>
+    async function loadContent() {
+      try {
+        // Fetch content from the backend
+        const classLinks = await fetchContent('classLinks');
+        const classRecordings = await fetchContent('classRecordings');
+        const pastPapers = await fetchContent('pastPapers');
+        const studyMaterials = await fetchContent('studyMaterials');
+        const quizzes = await fetchContent('quizzes');
+  
+        // Display content
+        displayContent(classLinks, 'class-links-list', 'Online Class Link');
+        displayContent(classRecordings, 'class-recordings-list', 'Class Recording');
+        displayContent(pastPapers, 'past-papers-list', 'Past Paper');
+        displayContent(studyMaterials, 'study-materials-list', 'Study Material');
+        displayContent(quizzes, 'quizzes-list', 'Quiz');
+      } catch (error) {
+        console.error('Error loading content:', error);
+      }
+    }
+  
+    async function fetchContent(category) {
+      try {
+        const response = await fetch(`http://localhost:3000/api/${category}`);
+        if (response.ok) {
+          return await response.json();
+        } else {
+          console.error(`Failed to fetch ${category}`);
+          return [];
+        }
+      } catch (error) {
+        console.error(`Error fetching ${category}:`, error);
+        return [];
+      }
+    }
+  
+    function displayContent(items, containerId, type) {
+      const container = document.getElementById(containerId);
+      if (items.length === 0) {
+        container.innerHTML = `<p>No ${type.toLowerCase()} available.</p>`;
+        return;
+      }
+  
+      items.forEach(item => {
+        const itemElement = document.createElement('div');
+        itemElement.classList.add('item');
+        const timePosted = new Date(item.timestamp || Date.now()).toLocaleString();
+  
+        itemElement.innerHTML = `
+          <div class="item-details">
+            <a href="${item.link}" target="_blank" class="title-link">
+              <strong>${item.subject ? item.subject + ": " : ""}${item.title}</strong>
+            </a>
+            <span class="time-info">Posted on: ${timePosted}</span>
+          </div>
+        `;
+        container.appendChild(itemElement);
+      });
+    }
+  
+    function setGreeting() {
+      const hour = new Date().getHours();
+      const userName = "Student"; // Replace with the actual username
+      let greeting;
+  
+      if (hour < 12) {
+        greeting = `Good Morning, ${userName}`;
+      } else if (hour < 18) {
+        greeting = `Good Afternoon, ${userName}`;
+      } else {
+        greeting = `Good Evening, ${userName}`;
+      }
+  
+      document.getElementById('greeting').textContent = greeting;
+    }
+  
+    function logout() {
+      window.location.href = "index.html";
+    }
+  
+    window.onload = function () {
+      setGreeting();
+      loadContent();
+    };
+  </script>
+  
+
+
+</body>
+</html>

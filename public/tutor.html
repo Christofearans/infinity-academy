@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tutor Dashboard - Infinity Academy</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background-color: #333;
+      color: #fff;
+      width: 100%;
+      padding: 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+    }
+
+    header p {
+      font-size: 1.2rem;
+    }
+
+    .dashboard-container {
+      width: 80%;
+      max-width: 1200px;
+      margin-top: 20px;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 80px; /* Ensures space for footer */
+    }
+
+    .dashboard-container h2 {
+      color: #00b3e6;
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    .dashboard-container p {
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+    }
+
+    .functions {
+      display: flex;
+      justify-content: space-around;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .functions div {
+      background-color: #e6e6e6;
+      padding: 20px;
+      width: 45%;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .functions div h3 {
+      color: #00b3e6;
+      margin-bottom: 10px;
+    }
+
+    .functions div button {
+      background-color: #00b3e6;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .functions div button:hover {
+      background-color: #008c99;
+    }
+
+    /* Popup overlay for password input */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: none; /* Hidden by default */
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .popup {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 400px;
+    }
+
+    .popup input {
+      padding: 10px;
+      font-size: 1rem;
+      margin-right: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .popup button {
+      padding: 10px 15px;
+      background-color: #00b3e6;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .popup button:hover {
+      background-color: #008c99;
+    }
+
+    .popup .error-message {
+      color: red;
+      margin-top: 10px;
+    }
+
+    .whatsapp-link {
+      margin-top: 20px;
+      display: block;
+      text-decoration: none;
+      color: #00b3e6;
+      font-weight: bold;
+    }
+
+    .whatsapp-link:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      background-color: #333;
+      color: #fff;
+      padding: 10px;
+      text-align: center;
+      width: 100%;
+      position: relative;
+      bottom: 0;
+      margin-top: auto;
+    }
+
+    footer a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .functions {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .functions div {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Welcome, Tutor</h1>
+    <p>Manage your subjects and content, track student progress, and more.</p>
+  </header>
+
+  <div class="dashboard-container">
+    <h2>Tutor Dashboard</h2>
+    <p>Select the dashboard based on the type of tutor you are:</p>
+
+    <div class="functions">
+      <div>
+        <h3>High School Tutor Dashboard</h3>
+        <button onclick="showPopup('HS-request-pass')">Go to High School Dashboard</button>
+      </div>
+      <div>
+        <h3>University Tutor Dashboard</h3>
+        <button onclick="showPopup('UN-request-pass')">Go to University Dashboard</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popup overlay for password input -->
+  <div class="overlay" id="password-popup">
+    <div class="popup">
+      <h3>Enter your password</h3>
+      <input type="password" id="password-input" placeholder="Enter your password">
+      <button onclick="checkPassword()">Submit</button>
+      <div class="error-message" id="error-message"></div>
+
+      <a href="https://wa.me/yourwhatsappnumber?text=Can%20I%20have%20the%20password%20for%20the%20High%20School%20Tutor%20Dashboard?" class="whatsapp-link" target="_blank" id="whatsapp-link">Don't know the password? Request it on WhatsApp (High School)</a>
+
+      <a href="https://wa.me/yourwhatsappnumber?text=Can%20I%20have%20the%20password%20for%20the%20University%20Tutor%20Dashboard?" class="whatsapp-link" target="_blank" id="whatsapp-link-university">Don't know the password? Request it on WhatsApp (University)</a>
+
+      <!-- Go Back Button -->
+      <button onclick="goBack()">Go Back</button>
+    </div>
+  </div>
+
+  <footer>
+    <p><a href="javascript:void(0)" onclick="logout()">Log out</a></p>
+  </footer>
+
+  <script>
+    // Show the popup overlay when a button is clicked
+    function showPopup(correctPassword) {
+      document.getElementById('password-popup').style.display = 'flex'; // Show the overlay
+      window.correctPassword = correctPassword;
+      
+      // Show relevant WhatsApp link
+      if (correctPassword === 'HS-request-Pass') {
+        document.getElementById('whatsapp-link').style.display = 'block';
+        document.getElementById('whatsapp-link-university').style.display = 'none';
+      } else {
+        document.getElementById('whatsapp-link').style.display = 'none';
+        document.getElementById('whatsapp-link-university').style.display = 'block';
+      }
+    }
+  
+    // Check the entered password
+    async function checkPassword() {
+      const enteredPassword = document.getElementById('password-input').value;
+      const errorMessage = document.getElementById('error-message');
+  
+      try {
+        const response = await fetch('http://localhost:3000/api/checkPassword', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ enteredPassword, correctPassword: window.correctPassword }),
+        });
+  
+        if (response.ok) {
+          const { redirectUrl } = await response.json();
+          window.location.href = redirectUrl;
+        } else {
+          errorMessage.textContent = 'Incorrect password. Please try again.';
+        }
+      } catch (error) {
+        console.error('Error checking password:', error);
+      }
+    }
+  
+    // Go back to the previous page
+    function goBack() {
+      if (window.history.length > 1) {
+        window.history.back();  // Go back to the previous page
+      } else {
+        window.location.href = 'tutor.html';  // Fallback to the dashboard page if no history
+      }
+    }
+  
+    // Function to handle the logout action
+    function logout() {
+      window.location.href = 'index.html';  // Change to your actual login page URL
+    }
+  </script>
+  
+  
+  
+</body>
+</html>

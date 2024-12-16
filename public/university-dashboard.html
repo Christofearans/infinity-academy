@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tutor Dashboard</title>
+  <style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f9;
+}
+
+header {
+  background: #333;
+  color: #fff;
+  padding: 10px 20px;
+  text-align: center;
+}
+
+.container {
+  margin: 20px;
+}
+
+.section {
+  margin-bottom: 30px;
+  padding: 15px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.section h2 {
+  margin-top: 0;
+}
+
+textarea, input, select {
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+button {
+  background: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #0056b3;
+}
+
+.logout-btn {
+  background: #dc3545;
+  margin-top: 20px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background: #c82333;
+}
+
+.uploaded-item {
+  margin-bottom: 15px;
+  padding: 10px;
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.uploaded-item button {
+  background: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.uploaded-item button:hover {
+  background: darkred;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .container {
+    margin: 10px;
+  }
+
+  .section {
+    padding: 10px;
+  }
+
+  button, .logout-btn {
+    width: 100%;
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  header {
+    padding: 10px 10px;
+  }
+
+  .section h2 {
+    font-size: 1.2em;
+  }
+
+  button, .logout-btn {
+    padding: 10px;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Tutor Dashboard</h1>
+    <p>Welcome to Infinity Academy - Tutor Section</p>
+  </header>
+  <div class="container">
+    <!-- Online Class Links Section -->
+    <div class="section" id="online-class-links">
+      <h2>Upload Online Class Links</h2>
+      <label for="class-title">Class Title:</label>
+      <input type="text" id="class-title" placeholder="Enter the class title...">
+      <label for="class-link">Class Link (Google Meet, Zoom, etc.):</label>
+      <input type="url" id="class-link" placeholder="Enter the class link here...">
+      <button onclick="uploadClassLink()">Upload Class Link</button>
+      <h3>Uploaded Class Links</h3>
+      <div id="class-links-container"></div>
+    </div>
+    <!-- Online Class Recordings Section -->
+    <div class="section" id="online-class-recordings">
+      <h2>Upload Online Class Recordings</h2>
+      <label for="recording-subject">Select Subject:</label>
+      <select id="recording-subject">
+        <option value="probability">Probability</option>
+        <option value="statistics">Statistics</option>
+      </select>
+      <label for="recording-title">Recording Title:</label>
+      <input type="text" id="recording-title" placeholder="Enter the recording title...">
+      <label for="recording-link">Recording Link (YouTube, Google Drive, etc.):</label>
+      <input type="url" id="recording-link" placeholder="Enter the recording link here...">
+      <button onclick="uploadClassRecording()">Upload Class Recording</button>
+      <h3>Uploaded Class Recordings</h3>
+      <div id="class-recordings-container"></div>
+    </div>
+    <!-- Past Papers Section -->
+    <div class="section" id="past-papers">
+      <h2>Upload Past Papers</h2>
+      <label for="past-subject">Select Subject:</label>
+      <select id="past-subject">
+        <option value="probability">Probability</option>
+        <option value="statistics">Statistics</option>
+      </select>
+      <label for="past-title">Past Paper Title:</label>
+      <input type="text" id="past-title" placeholder="Enter the past paper title...">
+      <label for="past-link">Past Paper Link (PDF, DOC, etc.):</label>
+      <input type="url" id="past-link" placeholder="Enter the past paper link here...">
+      <button onclick="uploadPastPaper()">Upload Past Paper</button>
+      <h3>Uploaded Past Papers</h3>
+      <div id="past-papers-container"></div>
+    </div>
+    <!-- Study Materials Section -->
+    <div class="section" id="study-materials">
+      <h2>Upload Study Materials</h2>
+      <label for="study-subject">Select Subject:</label>
+      <select id="study-subject">
+        <option value="probability">Probability</option>
+        <option value="statistics">Statistics</option>
+      </select>
+      <label for="study-title">Material Title:</label>
+      <input type="text" id="study-title" placeholder="Enter the material title...">
+      <label for="study-link">Material Link (PDF, Word Doc, etc.):</label>
+      <input type="url" id="study-link" placeholder="Enter the material link here...">
+      <button onclick="uploadStudyMaterial()">Upload Study Material</button>
+      <h3>Uploaded Study Materials</h3>
+      <div id="study-materials-container"></div>
+    </div>
+    <!-- Online Quizzes Section -->
+    <div class="section" id="online-quizzes">
+      <h2>Upload Online Quiz Links</h2>
+      <label for="quiz-subject">Select Subject:</label>
+      <select id="quiz-subject">
+        <option value="probability">Probability</option>
+        <option value="statistics">Statistics</option>
+      </select>
+      <label for="quiz-title">Quiz Title:</label>
+      <input type="text" id="quiz-title" placeholder="Enter the quiz title...">
+      <label for="quiz-link">Quiz Link (Google Forms, etc.):</label>
+      <input type="url" id="quiz-link" placeholder="Enter the quiz link here...">
+      <button onclick="uploadQuiz()">Upload Quiz</button>
+      <h3>Uploaded Quizzes</h3>
+      <div id="quizzes-container"></div>
+    </div>
+    <!-- View Student Dashboard -->
+    <div class="section" id="view-student-dashboard">
+      <h2>View Student Dashboard</h2>
+      <p>Click the button below to access the student dashboard and see how your content is presented to students.</p>
+      <a href="UNI-Student.html" class="btn">Go to Student Dashboard</a>
+    </div>
+    <!-- Logout Button -->
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+  <footer>
+    &copy; 2024 Infinity Academy - Tutor Dashboard
+  </footer>
+  <script>
+    // Helper function to get the current timestamp
+    function getCurrentTimestamp() {
+      const now = new Date();
+      return now.toLocaleString(); // Returns a human-readable timestamp
+    }
+  
+    // Function to upload an item (generalized)
+    async function uploadItem(category, data) {
+      try {
+        const response = await fetch(`http://localhost:3000/api/${category}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+  
+        if (response.ok) {
+          alert(`${category.slice(0, -1)} uploaded successfully!`);
+          displayUploadedItems(category); // Refresh the display after uploading
+        } else {
+          alert(`Failed to upload ${category.slice(0, -1)}.`);
+        }
+      } catch (error) {
+        console.error('Error uploading item:', error);
+      }
+    }
+  
+    // Online Class Links Functions
+    function uploadClassLink() {
+      const title = document.getElementById('class-title').value;
+      const link = document.getElementById('class-link').value;
+  
+      if (!title || !link) {
+        alert("Please provide a title and a link for the class.");
+        return;
+      }
+  
+      uploadItem('classLinks', { title, link, timestamp: getCurrentTimestamp() });
+    }
+  
+    // Online Class Recordings Functions
+    function uploadClassRecording() {
+      const subject = document.getElementById('recording-subject').value;
+      const title = document.getElementById('recording-title').value;
+      const link = document.getElementById('recording-link').value;
+  
+      if (!title || !link) {
+        alert("Please provide a title and a link for the recording.");
+        return;
+      }
+  
+      uploadItem('classRecordings', { subject, title, link, timestamp: getCurrentTimestamp() });
+    }
+  
+    // Past Papers Functions
+    function uploadPastPaper() {
+      const subject = document.getElementById('past-subject').value;
+      const title = document.getElementById('past-title').value;
+      const link = document.getElementById('past-link').value;
+  
+      if (!title || !link) {
+        alert("Please provide a title and a link for the past paper.");
+        return;
+      }
+  
+      uploadItem('pastPapers', { subject, title, link, timestamp: getCurrentTimestamp() });
+    }
+  
+    // Study Materials Functions
+    function uploadStudyMaterial() {
+      const subject = document.getElementById('study-subject').value;
+      const title = document.getElementById('study-title').value;
+      const link = document.getElementById('study-link').value;
+  
+      if (!title || !link) {
+        alert("Please provide a title and a link for the study material.");
+        return;
+      }
+  
+      uploadItem('studyMaterials', { subject, title, link, timestamp: getCurrentTimestamp() });
+    }
+  
+    // Online Quizzes Functions
+    function uploadQuiz() {
+      const subject = document.getElementById('quiz-subject').value;
+      const title = document.getElementById('quiz-title').value;
+      const link = document.getElementById('quiz-link').value;
+  
+      if (!title || !link) {
+        alert("Please provide a title and a link for the quiz.");
+        return;
+      }
+  
+      uploadItem('quizzes', { subject, title, link, timestamp: getCurrentTimestamp() });
+    }
+  
+    // Function to delete an uploaded item
+    async function deleteUploadedItem(category, id) {
+      try {
+        const response = await fetch(`http://localhost:3000/api/${category}/${id}`, {
+          method: 'DELETE',
+        });
+  
+        if (response.ok) {
+          alert(`${category.slice(0, -1)} deleted successfully!`);
+          displayUploadedItems(category); // Refresh the display after deletion
+        } else {
+          alert(`Failed to delete ${category.slice(0, -1)}.`);
+        }
+      } catch (error) {
+        console.error('Error deleting item:', error);
+      }
+    }
+  
+    // Function to display uploaded items
+    async function displayUploadedItems(category, containerId = null) {
+      try {
+        const response = await fetch(`http://localhost:3000/api/${category}`);
+        const items = await response.json();
+        const container = document.getElementById(containerId || `${category}-container`);
+  
+        container.innerHTML = ""; // Clear previous items
+  
+        if (items.length === 0) {
+          container.innerHTML = "<p>No items uploaded yet.</p>";
+          return;
+        }
+  
+        items.forEach((item) => {
+          const itemElement = document.createElement("div");
+          itemElement.className = "uploaded-item";
+          itemElement.innerHTML = `
+            <h3>${item.title || "Untitled"} (${item.subject || "No Subject"})</h3>
+            <p><strong>Link:</strong> <a href="${item.link}" target="_blank">${item.link}</a></p>
+            <p><strong>Uploaded on:</strong> ${item.timestamp}</p>
+            <button onclick="deleteUploadedItem('${category}', '${item._id}')">Delete</button>
+          `;
+          container.appendChild(itemElement);
+        });
+      } catch (error) {
+        console.error('Error displaying items:', error);
+      }
+    }
+  
+    // Function to display all categories of uploaded items
+    function displayAllUploadedItems() {
+      displayUploadedItems('classLinks', 'class-links-container');
+      displayUploadedItems('classRecordings', 'class-recordings-container');
+      displayUploadedItems('pastPapers', 'past-papers-container');
+      displayUploadedItems('studyMaterials', 'study-materials-container');
+      displayUploadedItems('quizzes', 'quizzes-container');
+    }
+  
+    // Call displayAllUploadedItems on page load
+    window.onload = displayAllUploadedItems;
+  
+    // Logout Function
+    function logout() {
+      window.location.href = "index.html"; // Redirect to login page
+    }
+  </script>
+  
+
+</body>
+</html>

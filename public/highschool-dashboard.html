@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>High School Tutor Dashboard - Upload</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+    }
+    header {
+      background: #333;
+      color: #fff;
+      padding: 10px 20px;
+      text-align: center;
+    }
+    .container {
+      margin: 20px;
+    }
+    .section {
+      margin-bottom: 30px;
+      padding: 15px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .section h2 {
+      margin-top: 0;
+    }
+    textarea, input, select {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    button {
+      background: #007bff;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .announcement-item {
+      margin-bottom: 10px;
+      padding: 10px;
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    footer {
+      background: #333;
+      color: #fff;
+      text-align: center;
+      padding: 10px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>High School Tutor Dashboard</h1>
+    <p>Welcome to Infinity Academy - Tutor Section</p>
+  </header>
+  
+  <div class="container">
+    <!-- Announcements Section -->
+    <div class="section" id="announcements">
+      <h2>Create Announcements</h2>
+      <label for="announcement-text">Write Announcement:</label>
+      <textarea id="announcement-text" rows="4" placeholder="Write your announcement here..."></textarea>
+      <button onclick="publishAnnouncement()">Publish Announcement</button>
+      <div id="announcement-list"></div>
+    </div>
+
+    <!-- Upload Materials Section -->
+    <div class="section" id="upload-materials">
+      <h2>Upload Study Materials</h2>
+      
+      <label for="material-subject">Select Subject:</label>
+      <select id="material-subject">
+        <option value="mathematics">Mathematics</option>
+        <option value="maths-lit">Maths Lit</option>
+        <option value="physical-sciences">Physical Sciences</option>
+        <option value="life-sciences">Life Sciences</option>
+        <option value="agricultural-sciences">Agricultural Sciences</option>
+        <option value="history">History</option>
+        <option value="geography">Geography</option>
+        <option value="fal">FAL</option>
+        <option value="hl">HL</option>
+        <option value="lo">LO</option>
+        <option value="accounting">Accounting</option>
+        <option value="business-studies">Business Studies</option>
+        <option value="economics">Economics</option>
+      </select>
+
+      <label for="material-type">Select Material Type:</label>
+      <select id="material-type">
+        <option value="study-guide">Study Guide</option>
+        <option value="past-paper">Past Paper</option>
+        <option value="online-quiz">Online Quiz</option>
+        <option value="youtube-video">YouTube/Online Video</option>
+        <option value="tutorial">Tutorial</option>
+      </select>
+
+      <label for="material-title">Material Title:</label>
+      <input type="text" id="material-title" placeholder="Enter the material title...">
+
+      <label for="material-link">Material Link (Google Drive, YouTube, or Other):</label>
+      <input type="url" id="material-link" placeholder="Enter the material link here...">
+      
+      <button onclick="uploadMaterial()">Upload Material</button>
+      <div id="material-list"></div>
+    </div>
+
+    <!-- Navigation to Page 2 (Confirmation Page) -->
+    <div class="section">
+      <button onclick="goToConfirmationPage()">Go to Confirmation Page</button>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2024 Infinity Academy - Tutor Dashboard
+  </footer>
+  
+  <script>
+    async function getDataFromBackend(endpoint) {
+      try {
+        const response = await fetch(`http://localhost:3000/api/${endpoint}`);
+        if (response.ok) {
+          return await response.json();
+        } else {
+          console.error(`Failed to fetch ${endpoint}`);
+          return [];
+        }
+      } catch (error) {
+        console.error(`Error fetching ${endpoint}:`, error);
+        return [];
+      }
+    }
+  
+    async function publishAnnouncement() {
+      const announcementText = document.getElementById("announcement-text").value;
+      if (announcementText.trim() === "") {
+        alert("Please enter announcement text.");
+        return;
+      }
+      const currentDate = new Date().toLocaleString();
+      try {
+        const response = await fetch('http://localhost:3000/api/announcement', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ text: announcementText, date: currentDate }),
+        });
+        if (response.ok) {
+          document.getElementById("announcement-text").value = "";
+          displayAnnouncements();
+        } else {
+          alert('Failed to publish announcement.');
+        }
+      } catch (error) {
+        console.error('Error publishing announcement:', error);
+      }
+    }
+  
+    async function displayAnnouncements() {
+      const announcements = await getDataFromBackend('announcements');
+      const announcementList = document.getElementById("announcement-list");
+      announcementList.innerHTML = "";
+      announcements.forEach((announcement, index) => {
+        const div = document.createElement("div");
+        div.classList.add("announcement-item");
+        div.innerHTML = `
+          <div>
+            <strong>${announcement.text}</strong><br>
+            <small>${announcement.date}</small>
+          </div>
+          <button onclick="deleteAnnouncement('${announcement._id}')">Delete</button>
+        `;
+        announcementList.appendChild(div);
+      });
+    }
+  
+    async function deleteAnnouncement(id) {
+      try {
+        const response = await fetch(`http://localhost:3000/api/announcement/${id}`, {
+          method: 'DELETE',
+        });
+        if (response.ok) {
+          displayAnnouncements();
+        } else {
+          alert('Failed to delete announcement.');
+        }
+      } catch (error) {
+        console.error('Error deleting announcement:', error);
+      }
+    }
+  
+    async function uploadMaterial() {
+      const subject = document.getElementById("material-subject").value;
+      const type = document.getElementById("material-type").value;
+      const title = document.getElementById("material-title").value;
+      const link = document.getElementById("material-link").value;
+      if (title.trim() === "" || link.trim() === "") {
+        alert("Please fill in both title and link.");
+        return;
+      }
+      try {
+        const response = await fetch('http://localhost:3000/api/studyMaterials', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ subject, type, title, link }),
+        });
+        if (response.ok) {
+          document.getElementById("material-title").value = "";
+          document.getElementById("material-link").value = "";
+          displayMaterials();
+        } else {
+          alert('Failed to upload material.');
+        }
+      } catch (error) {
+        console.error('Error uploading material:', error);
+      }
+    }
+  
+    async function displayMaterials() {
+      const materials = await getDataFromBackend('studyMaterials');
+      const materialList = document.getElementById("material-list");
+      materialList.innerHTML = "";
+      materials.forEach((material, index) => {
+        const div = document.createElement("div");
+        div.classList.add("announcement-item");
+        div.innerHTML = `
+          <div>
+            <strong>${material.title}</strong><br>
+            <small>${material.subject} - ${material.type}</small><br>
+            <a href="${material.link}" target="_blank">Link to Material</a>
+          </div>
+          <button onclick="deleteMaterial('${material._id}')">Delete</button>
+        `;
+        materialList.appendChild(div);
+      });
+    }
+  
+    async function deleteMaterial(id) {
+      try {
+        const response = await fetch(`http://localhost:3000/api/studyMaterials/${id}`, {
+          method: 'DELETE',
+        });
+        if (response.ok) {
+          displayMaterials();
+        } else {
+          alert('Failed to delete material.');
+        }
+      } catch (error) {
+        console.error('Error deleting material:', error);
+      }
+    }
+  
+    function goToConfirmationPage() {
+      window.location.href = "high-school-subjects.html";
+    }
+  
+    document.addEventListener("DOMContentLoaded", function () {
+      displayAnnouncements();
+      displayMaterials();
+    });
+  </script>
+  
+</body>
+</html>
+

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student - Infinity Academy</title>
+  <style>
+    /* General styling */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1a1a1a;
+      color: #f0f0f0;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Header styling */
+    header {
+      background-color: #333;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+    }
+
+    header h1 {
+      color: #00b3e6;
+      font-size: 2.5em;
+      margin: 0;
+    }
+
+    header p {
+      font-size: 1.2em;
+      color: #cccccc;
+      margin: 5px 0;
+    }
+
+    /* Content sections */
+    .content-container {
+      display: flex;
+      justify-content: space-between;
+      padding: 20px;
+    }
+
+    .content-section {
+      background-color: #333;
+      color: #f0f0f0;
+      padding: 20px;
+      border-radius: 8px;
+      width: 48%;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      display: none; /* Hidden by default */
+    }
+
+    .content-section.visible {
+      display: block; /* Show only when validated */
+    }
+
+    .content-section h2 {
+      color: #00b3e6;
+      margin-top: 0;
+    }
+
+    /* Footer styling */
+    footer {
+      background-color: #333;
+      padding: 10px;
+      text-align: center;
+      color: #cccccc;
+      font-size: 0.9em;
+    }
+
+    footer a {
+      color: #00b3e6;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Modal styling */
+    .modal {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background-color: #444;
+      color: #f0f0f0;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 8px;
+      width: 50%;
+      text-align: center;
+    }
+
+    .modal-content button {
+      background-color: #00b3e6;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .modal-content button:hover {
+      background-color: #008c99;
+    }
+
+    /* High School button styling */
+    #high-school-button, #university-button {
+      background-color: #00b3e6;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    #high-school-button:hover, #university-button:hover {
+      background-color: #008c99;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Welcome, Student</h1>
+    <p>Access your lessons and learning materials.</p>
+  </header>
+
+  <div class="content-container">
+    <div class="content-section" id="university-content">
+      <h2>University Content</h2>
+      <p>Exclusive materials for university students.</p>
+      <!-- Button for university students to select content -->
+      <button id="university-button" onclick="redirectToUniversityContent()">Select University Content</button>
+    </div>
+
+    <div class="content-section" id="high-school-content">
+      <h2>High School Content</h2>
+      <p>Exclusive materials for high school students.</p>
+      <!-- Button for high school students to select subjects -->
+      <button id="high-school-button" onclick="redirectToHighSchoolSubjects()">Select Your Subjects</button>
+    </div>
+  </div>
+
+  <footer>
+    <p><a href="index.html">Log out</a></p>
+  </footer>
+
+  <!-- Secret Code Modal -->
+  <div class="modal" id="secret-code-modal">
+    <div class="modal-content">
+      <h2>Enter Secret Code</h2>
+      <input type="text" id="secret-code-input" placeholder="Enter your secret code">
+      <button onclick="validateSecretCode()">Submit</button>
+    </div>
+  </div>
+
+  <script>
+    // Secret codes for validation
+    const validCodes = {
+      university: "UN-2024",
+      highSchool: "HS-2021"
+    };
+  
+    // Validate secret code and display corresponding content
+    async function validateSecretCode() {
+      const enteredCode = document.getElementById("secret-code-input").value.trim();
+  
+      try {
+        const response = await fetch('http://localhost:3000/api/validateCode', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ code: enteredCode }),
+        });
+  
+        if (response.ok) {
+          const { studentType } = await response.json();
+          if (studentType === 'university') {
+            document.getElementById("university-content").classList.add("visible");
+            localStorage.setItem('studentType', 'university');  // Save student type
+          } else if (studentType === 'highSchool') {
+            document.getElementById("high-school-content").classList.add("visible");
+            localStorage.setItem('studentType', 'highSchool');  // Save student type
+          }
+          closeModal();
+        } else {
+          alert("Invalid secret code. Please try again.");
+        }
+      } catch (error) {
+        console.error('Error validating secret code:', error);
+      }
+    }
+  
+    // Close the modal after validation
+    function closeModal() {
+      document.getElementById("secret-code-modal").style.display = "none";
+    }
+  
+    // Function to redirect high school students to the subject selection page
+    function redirectToHighSchoolSubjects() {
+      window.location.href = 'high-school-subjects.html';  // Adjust this path as necessary
+    }
+  
+    // Function to redirect university students to the content selection page
+    function redirectToUniversityContent() {
+      window.location.href = 'UNI-Student.html';  // Adjust this path as necessary
+    }
+  
+    // Check for saved student type on page load
+    document.addEventListener('DOMContentLoaded', async () => {
+      const studentType = localStorage.getItem('studentType');
+      
+      if (studentType) {
+        // If student type is saved, show the respective content
+        if (studentType === 'university') {
+          document.getElementById("university-content").classList.add("visible");
+        } else if (studentType === 'highSchool') {
+          document.getElementById("high-school-content").classList.add("visible");
+        }
+      } else {
+        // If no student type is saved, show the modal for secret code input
+        document.getElementById("secret-code-modal").style.display = "block";
+      }
+    });
+  </script>
+  
+
+
+</body>
+</html>
