@@ -1,0 +1,2 @@
+# infinity-academy
+school related
