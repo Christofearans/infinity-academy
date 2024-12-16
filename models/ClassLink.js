@@ -15,5 +15,4 @@ const classLinkSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('ClassLink', classLinkSchema);
- 
+module.exports = mongoose.models.ClassLink || mongoose.model('ClassLink', classLinkSchema);
