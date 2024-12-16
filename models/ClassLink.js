@@ -15,4 +15,5 @@ const classLinkSchema = new mongoose.Schema({
   },
 });
 
+// Check if the model is already defined, to prevent overwriting
 module.exports = mongoose.models.ClassLink || mongoose.model('ClassLink', classLinkSchema);
