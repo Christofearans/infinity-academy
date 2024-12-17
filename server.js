@@ -50,10 +50,3 @@ app.use('/api', passwordCheckRoutes);
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
-
-require('dotenv').config();
-
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
