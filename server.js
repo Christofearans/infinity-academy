@@ -16,6 +16,8 @@ app.use(express.static('public')); // Serve static files from the public directo
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  ssl: true,
+  tlsAllowInvalidCertificates: true,
 });
 
 const db = mongoose.connection;
