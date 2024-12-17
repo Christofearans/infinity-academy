@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.static('public')); // Serve static files from the public directory
 
 // MongoDB connection
-mongoose.connect(process.env.MONGODB_URI, {
+mongoose.connect('mongodb+srv://tebogorector2:%3CJesus4Life100%3E_@cluster0.gcx0u.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
