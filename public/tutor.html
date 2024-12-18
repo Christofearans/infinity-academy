@@ -225,7 +225,8 @@
     <p><a href="javascript:void(0)" onclick="logout()">Log out</a></p>
   </footer>
 
-  <script>// Show the popup overlay when a button is clicked
+  <script>
+// Show the popup overlay when a button is clicked
 function showPopup(correctPassword) {
   document.getElementById('password-popup').style.display = 'flex'; // Show the overlay
   window.correctPassword = correctPassword;
@@ -265,23 +266,28 @@ async function checkPassword() {
   }
 }
 
+// Store the current page URL before navigating to the password page
+function navigateToPasswordPage(correctPassword) {
+  sessionStorage.setItem('previousPage', window.location.href); // Store the current page URL
+  showPopup(correctPassword);
+}
+
 // Go back to the previous page
 function goBack() {
-  // Check if there is browser history
-  if (document.referrer.includes('tutor.html') || document.referrer === '') {
-    window.location.href = 'tutor.html';  // Navigate to tutor page if previous page is tutor or no referrer
+  const previousPage = sessionStorage.getItem('previousPage');
+  if (previousPage) {
+    window.location.href = previousPage; // Navigate to the stored previous page
   } else {
-    window.history.back();  // Go back to the previous page
+    window.location.href = 'tutor.html'; // Fallback to the tutor page if no previous page is stored
   }
 }
 
 // Function to handle the logout action
 function logout() {
-  window.location.href = 'index.html';  // Change to your actual login page URL
+  window.location.href = 'index.html'; // Change to your actual login page URL
 }
+</script>
 
-
-  </script>
   
   
   
