@@ -470,38 +470,6 @@ button:hover {
   </div>
   
   <script>
-    // Login Functionality
-    async function login() {
-      const username = document.getElementById('login-username').value;
-      const password = document.getElementById('login-password').value;
-  
-      try {
-        const response = await fetch('http://localhost:3000/api/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ username, password }),
-        });
-  
-        if (response.ok) {
-          const user = await response.json();
-          // Redirect based on role
-          if (user.role === 'admin') {
-            window.location.href = 'admin.html';
-          } else if (user.role === 'tutor') {
-            window.location.href = 'tutor.html';
-          } else if (user.role === 'student') {
-            window.location.href = 'student.html';
-          }
-        } else {
-          document.getElementById('login-error').textContent = 'Invalid username or password.';
-        }
-      } catch (error) {
-        console.error('Error:', error);
-      }
-    }
-  
     // Register Functionality
     async function register() {
       const username = document.getElementById('register-username').value.trim();
@@ -552,8 +520,11 @@ button:hover {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ username, password, role: learnerType }),
+          body: JSON.stringify({ username, password, role: learnerType, secretCode }),
         });
+  
+        console.log('Response Status:', response.status);
+        console.log('Response Data:', await response.text()); // log response text for more detail
   
         if (response.ok) {
           alert('Registration successful! Please login to continue.');
@@ -567,6 +538,7 @@ button:hover {
         document.getElementById('register-error').textContent = 'An error occurred during registration.';
       }
     }
+  
   
     // Toggle between login and registration forms
     function toggleForm() {

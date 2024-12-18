@@ -6,9 +6,12 @@ const User = require('../models/User');
 router.post('/register', async (req, res) => {
   const { username, password, role, secretCode } = req.body;
 
+  console.log('Received registration request:', req.body);
+
   // Check if username already exists
   const userExists = await User.findOne({ username });
   if (userExists) {
+    console.log('Username already exists:', username);
     return res.status(400).json({ message: 'Username already exists. Please choose another one.' });
   }
 
@@ -18,52 +21,42 @@ router.post('/register', async (req, res) => {
     if (secretCode === 'UN-2024' || secretCode === 'HS-2021') {
       validCode = true;
     } else {
+      console.log('Invalid secret code for students:', secretCode);
       return res.status(400).json({ message: 'Invalid secret code for students.' });
     }
   } else if (role === "tutor") {
     if (secretCode === 'T-2023') {
       validCode = true;
     } else {
+      console.log('Invalid secret code for tutors:', secretCode);
       return res.status(400).json({ message: 'Invalid secret code for tutors.' });
     }
   } else if (role === "admin") {
     if (secretCode === 'AD-12345') {
       validCode = true;
     } else {
+      console.log('Invalid secret code for admins:', secretCode);
       return res.status(400).json({ message: 'Invalid secret code for admins.' });
     }
   }
 
   if (!validCode) {
+    console.log('Invalid secret code:', secretCode);
     return res.status(400).json({ message: 'Invalid secret code.' });
   }
 
-  const newUser = new User({ username, password, role });
-  await newUser.save();
-  res.status(201).send('User registered');
-});
-
-// Login a user
-router.post('/login', async (req, res) => {
-  const { username, password } = req.body;
-  const user = await User.findOne({ username, password });
-  if (user) {
-    res.json(user);
-  } else {
-    res.status(401).send('Invalid username or password');
+  // Proceed with registration
+  try {
+    const newUser = new User({ username, password, role });
+    await newUser.save();
+    console.log('User registered successfully:', username);
+    res.status(201).send('User registered');
+  } catch (error) {
+    console.error('Error during registration:', error);
+    res.status(500).json({ message: 'Server error during registration.' });
   }
 });
 
-// Get all users
-router.get('/users', async (req, res) => {
-  const users = await User.find();
-  res.json(users);
-});
-
-// Delete a user
-router.delete('/user/:id', async (req, res) => {
-  await User.findByIdAndDelete(req.params.id);
-  res.send('User deleted');
-});
+// Other routes...
 
 module.exports = router;
