@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard</title>
-  <style>
+ <style>
     body {
       font-family: Arial, sans-serif;
       background-color: #f4f4f9;
@@ -41,6 +41,8 @@
     th, td {
       padding: 10px;
       text-align: left;
+      word-wrap: break-word; /* Ensures long words wrap */
+      max-width: 300px; /* Limits the width of cells */
     }
     th {
       background-color: #007bff;
@@ -86,6 +88,11 @@
       max-width: 100px;
       max-height: 100px;
     }
+    /* Add max height and scroll for large content */
+    .announcement-table td {
+      max-height: 150px; /* Limit height */
+      overflow-y: auto; /* Add scroll for overflow */
+    }
     .modal {
       display: none;
       position: fixed;
@@ -114,17 +121,17 @@
     }
 
     .logout-button {
-    float: right;
-    margin-top: -30px;
-    padding: 10px 15px;
-    background-color: #ff4d4d;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
+      float: right;
+      margin-top: -30px;
+      padding: 10px 15px;
+      background-color: #ff4d4d;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+</style>
 
-  </style>
 </head>
 <body>
   <header>
