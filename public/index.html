@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tutoring Program - Infinity Academy</title>
 
-  <style>
+ <style>
     
     /* General reset */
     body, html {
@@ -115,11 +115,12 @@
   margin-bottom: 10px;
 }
 
-/* Announcement individual item styling */ 
-.announcement { opacity: 0; 
-               transition: 
-                 opacity 1s ease-in-out; 
-               position: absolute; }
+/* Announcement individual item styling */
+.announcement {
+  font-size: 1.1em;
+  display: none;
+  margin-bottom: 20px;
+}
 
 /* Announcement image styling */
 .announcement img {
@@ -135,9 +136,9 @@
 }
 
 /* Make the active announcement visible */
-.announcement.active { 
-  opacity: 1; }
-    
+.active {
+  display: block;
+}
 /* Announcements styling */
 #announcements {
   background-color: #333;
@@ -367,9 +368,19 @@ button:hover {
   }
 }
 
+/* Fade-in announcement */
+.announcement {
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  position: absolute;
+}
 
+.announcement.active {
+  opacity: 1;
+}
 
-  </style>
+</style>
+
 
 
   
