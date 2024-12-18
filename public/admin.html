@@ -291,12 +291,13 @@ const addAnnouncement = async () => {
   }
 
   try {
+    const timestamp = new Date().toISOString();
     await fetch('https://infinity-academy.onrender.com/api/announcement', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ content, image: imageUrl }),
+      body: JSON.stringify({ content, image: imageUrl, timestamp }),
     });
     loadAnnouncements();
 
@@ -307,6 +308,7 @@ const addAnnouncement = async () => {
     console.error('Error adding announcement:', error);
   }
 };
+
 
 const removeAnnouncement = async (announcementId) => {
   try {
