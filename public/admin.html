@@ -189,137 +189,138 @@
   </div>
 
 
-  <script>
-    const formatText = (command, value = null) => {
-      document.execCommand(command, false, value);
-    };
-  
-    const getTimeElapsed = (timestamp) => {
-      const now = new Date();
-      const diff = now - new Date(timestamp);
-      if (diff < 60000) return "Active";
-      if (diff < 3600000) return `${Math.floor(diff / 60000)} minute(s) ago`;
-      if (diff < 86400000) return `${Math.floor(diff / 3600000)} hour(s) ago`;
-      if (diff < 604800000) return `${Math.floor(diff / 86400000)} day(s) ago`;
-      return `Last seen on ${new Date(timestamp).toLocaleDateString()}`;
-    };
-  
-    const loadUsers = async () => {
-      try {
-        const response = await fetch('http://localhost:3000/api/users');
-        const users = await response.json();
-        const userTableBody = document.getElementById("user-table-body");
-        userTableBody.innerHTML = "";
-        users.forEach((user) => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${user.username}</td>
-            <td>${user.role}</td>
-            <td>${user.lastSeen ? getTimeElapsed(user.lastSeen) : "Never"}</td>
-            <td>${(user.totalTimeSpent / 60).toFixed(2)} min</td>
-            <td><button class="button" onclick="deleteUser('${user._id}')">Delete</button></td>
-          `;
-          userTableBody.appendChild(row);
-        });
-      } catch (error) {
-        console.error('Error loading users:', error);
-      }
-    };
-  
-    const deleteUser = async (userId) => {
-      try {
-        await fetch(`http://localhost:3000/api/user/${userId}`, {
-          method: 'DELETE',
-        });
-        loadUsers();
-      } catch (error) {
-        console.error('Error deleting user:', error);
-      }
-    };
-  
-    const logout = () => {
-      window.location.href = "index.html";
-    };
-  
-    const loadAnnouncements = async () => {
-      try {
-        const response = await fetch('http://localhost:3000/api/announcements');
-        const announcements = await response.json();
-        const tableBody = document.getElementById("announcement-table-body");
-        tableBody.innerHTML = "";
-  
-        announcements.forEach((announcement) => {
-          const row = document.createElement("tr");
-  
-          // Format the date
-          const formattedDate = new Date(announcement.timestamp).toLocaleString();
-  
-          // Create table row content
-          const contentCell = `<td>${announcement.content || ''}</td>`;
-          const imageCell = `
-            <td>
-              ${announcement.image 
-                ? `<img src="${announcement.image}" alt="Announcement Image" style="max-width: 100px;">`
-                : ''}
-            </td>`;
-          const dateCell = `<td>${formattedDate}</td>`;
-          const actionCell = `
-            <td>
-              <button class="button" onclick="removeAnnouncement('${announcement._id}')">Remove</button>
-            </td>`;
-  
-          // Append cells to the row
-          row.innerHTML = `${contentCell}${imageCell}${dateCell}${actionCell}`;
-          tableBody.appendChild(row);
-        });
-      } catch (error) {
-        console.error('Error loading announcements:', error);
-      }
-    };
-  
-    const addAnnouncement = async () => {
-      const content = document.getElementById("editor-content").innerHTML.trim();
-      const imageUrl = document.getElementById("announcement-image-url").value.trim();
-  
-      if (!content) {
-        alert("Please enter content.");
-        return;
-      }
-  
-      try {
-        await fetch('http://localhost:3000/api/announcement', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ content, image: imageUrl }),
-        });
-        loadAnnouncements();
-  
-        // Clear the input fields after adding an announcement
-        document.getElementById("editor-content").innerHTML = "";
-        document.getElementById("announcement-image-url").value = "";
-      } catch (error) {
-        console.error('Error adding announcement:', error);
-      }
-    };
-  
-    const removeAnnouncement = async (announcementId) => {
-      try {
-        await fetch(`http://localhost:3000/api/announcement/${announcementId}`, {
-          method: 'DELETE',
-        });
-        loadAnnouncements();
-      } catch (error) {
-        console.error('Error removing announcement:', error);
-      }
-    };
-  
-    window.onload = () => {
+ <script>
+  const formatText = (command, value = null) => {
+    document.execCommand(command, false, value);
+  };
+
+  const getTimeElapsed = (timestamp) => {
+    const now = new Date();
+    const diff = now - new Date(timestamp);
+    if (diff < 60000) return "Active";
+    if (diff < 3600000) return `${Math.floor(diff / 60000)} minute(s) ago`;
+    if (diff < 86400000) return `${Math.floor(diff / 3600000)} hour(s) ago`;
+    if (diff < 604800000) return `${Math.floor(diff / 86400000)} day(s) ago`;
+    return `Last seen on ${new Date(timestamp).toLocaleDateString()}`;
+  };
+
+  const loadUsers = async () => {
+    try {
+      const response = await fetch('https://infinity-academy.onrender.com/api/users');
+      const users = await response.json();
+      const userTableBody = document.getElementById("user-table-body");
+      userTableBody.innerHTML = "";
+      users.forEach((user) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${user.username}</td>
+          <td>${user.role}</td>
+          <td>${user.lastSeen ? getTimeElapsed(user.lastSeen) : "Never"}</td>
+          <td>${(user.totalTimeSpent / 60).toFixed(2)} min</td>
+          <td><button class="button" onclick="deleteUser('${user._id}')">Delete</button></td>
+        `;
+        userTableBody.appendChild(row);
+      });
+    } catch (error) {
+      console.error('Error loading users:', error);
+    }
+  };
+
+  const deleteUser = async (userId) => {
+    try {
+      await fetch(`https://infinity-academy.onrender.com/api/user/${userId}`, {
+        method: 'DELETE',
+      });
       loadUsers();
+    } catch (error) {
+      console.error('Error deleting user:', error);
+    }
+  };
+
+  const logout = () => {
+    window.location.href = "index.html";
+  };
+
+  const loadAnnouncements = async () => {
+    try {
+      const response = await fetch('https://infinity-academy.onrender.com/api/announcements');
+      const announcements = await response.json();
+      const tableBody = document.getElementById("announcement-table-body");
+      tableBody.innerHTML = "";
+
+      announcements.forEach((announcement) => {
+        const row = document.createElement("tr");
+
+        // Format the date
+        const formattedDate = new Date(announcement.timestamp).toLocaleString();
+
+        // Create table row content
+        const contentCell = `<td>${announcement.content || ''}</td>`;
+        const imageCell = `
+          <td>
+            ${announcement.image 
+              ? `<img src="${announcement.image}" alt="Announcement Image" style="max-width: 100px;">`
+              : ''}
+          </td>`;
+        const dateCell = `<td>${formattedDate}</td>`;
+        const actionCell = `
+          <td>
+            <button class="button" onclick="removeAnnouncement('${announcement._id}')">Remove</button>
+          </td>`;
+
+        // Append cells to the row
+        row.innerHTML = `${contentCell}${imageCell}${dateCell}${actionCell}`;
+        tableBody.appendChild(row);
+      });
+    } catch (error) {
+      console.error('Error loading announcements:', error);
+    }
+  };
+
+  const addAnnouncement = async () => {
+    const content = document.getElementById("editor-content").innerHTML.trim();
+    const imageUrl = document.getElementById("announcement-image-url").value.trim();
+
+    if (!content) {
+      alert("Please enter content.");
+      return;
+    }
+
+    try {
+      await fetch('https://infinity-academy.onrender.com/api/announcement', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ content, image: imageUrl }),
+      });
       loadAnnouncements();
-    };
-  </script>
+
+      // Clear the input fields after adding an announcement
+      document.getElementById("editor-content").innerHTML = "";
+      document.getElementById("announcement-image-url").value = "";
+    } catch (error) {
+      console.error('Error adding announcement:', error);
+    }
+  };
+
+  const removeAnnouncement = async (announcementId) => {
+    try {
+      await fetch(`https://infinity-academy.onrender.com/api/announcement/${announcementId}`, {
+        method: 'DELETE',
+      });
+      loadAnnouncements();
+    } catch (error) {
+      console.error('Error removing announcement:', error);
+    }
+  };
+
+  window.onload = () => {
+    loadUsers();
+    loadAnnouncements();
+  };
+</script>
+
   
 
 </body>
