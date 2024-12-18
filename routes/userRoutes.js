@@ -50,6 +50,10 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Invalid username or password.' });
     }
 
+    // Update the lastSeen field
+    user.lastSeen = new Date();
+    await user.save();
+
     res.json({ role: user.role, username: user.username });
   } catch (error) {
     res.status(500).json({ message: 'Server error during login.' });
@@ -68,4 +72,5 @@ router.delete('/user/:id', async (req, res) => {
 });
 
 module.exports = router;
+
 
