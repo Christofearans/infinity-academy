@@ -49,6 +49,29 @@ app.use('/api', selectedSubjectsRoutes);
 app.use('/api', validationRoutes);
 app.use('/api', passwordCheckRoutes);
 
+// Backend validation for registration
+app.post('/api/register', async (req, res) => {
+  const { username, password, learnerType, secretCode } = req.body;
+
+  const secretCodeMap = {
+    student: ['UN-2024', 'HS-2021'],
+    tutor: ['T-2023'],
+    admin: ['AD-12345']
+  };
+
+  if (!secretCodeMap[learnerType]?.includes(secretCode)) {
+    return res.status(400).json({ error: 'Invalid secret code for ' + learnerType + 's.' });
+  }
+
+  // Proceed with registration logic (e.g., hash the password, store user in the database)
+  // For now, let's just return a success message
+  res.status(200).json({ message: 'Registration successful' });
+});
+
+// Validation route for secret codes
+const validationRoutes = require('./routes/validationRoutes');
+app.use('/api', validationRoutes);
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

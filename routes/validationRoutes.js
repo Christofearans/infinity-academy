@@ -4,10 +4,15 @@ const router = express.Router();
 // Validate secret code
 router.post('/validateCode', (req, res) => {
   const { code } = req.body;
-  if (code === 'UN-2024') {
-    res.json({ studentType: 'university' });
-  } else if (code === 'HS-2021') {
-    res.json({ studentType: 'highSchool' });
+  const secretCodeMap = {
+    'UN-2024': 'university',
+    'HS-2021': 'highSchool',
+    'T-2023': 'tutor',
+    'AD-12345': 'admin'
+  };
+
+  if (secretCodeMap[code]) {
+    res.json({ studentType: secretCodeMap[code] });
   } else {
     res.status(400).send('Invalid secret code');
   }
