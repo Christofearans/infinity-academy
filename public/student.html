@@ -167,73 +167,75 @@
 
   <script>
     // Secret codes for validation
-    const validCodes = {
-      university: "UN-2024",
-      highSchool: "HS-2021"
-    };
-  
-    // Validate secret code and display corresponding content
-    async function validateSecretCode() {
-      const enteredCode = document.getElementById("secret-code-input").value.trim();
-  
-      try {
-        const response = await fetch('http://localhost:3000/api/validateCode', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ code: enteredCode }),
-        });
-  
-        if (response.ok) {
-          const { studentType } = await response.json();
-          if (studentType === 'university') {
-            document.getElementById("university-content").classList.add("visible");
-            localStorage.setItem('studentType', 'university');  // Save student type
-          } else if (studentType === 'highSchool') {
-            document.getElementById("high-school-content").classList.add("visible");
-            localStorage.setItem('studentType', 'highSchool');  // Save student type
-          }
-          closeModal();
-        } else {
-          alert("Invalid secret code. Please try again.");
-        }
-      } catch (error) {
-        console.error('Error validating secret code:', error);
-      }
-    }
-  
-    // Close the modal after validation
-    function closeModal() {
-      document.getElementById("secret-code-modal").style.display = "none";
-    }
-  
-    // Function to redirect high school students to the subject selection page
-    function redirectToHighSchoolSubjects() {
-      window.location.href = 'high-school-subjects.html';  // Adjust this path as necessary
-    }
-  
-    // Function to redirect university students to the content selection page
-    function redirectToUniversityContent() {
-      window.location.href = 'UNI-Student.html';  // Adjust this path as necessary
-    }
-  
-    // Check for saved student type on page load
-    document.addEventListener('DOMContentLoaded', async () => {
-      const studentType = localStorage.getItem('studentType');
-      
-      if (studentType) {
-        // If student type is saved, show the respective content
-        if (studentType === 'university') {
-          document.getElementById("university-content").classList.add("visible");
-        } else if (studentType === 'highSchool') {
-          document.getElementById("high-school-content").classList.add("visible");
-        }
-      } else {
-        // If no student type is saved, show the modal for secret code input
-        document.getElementById("secret-code-modal").style.display = "block";
-      }
+// Secret codes for validation
+const validCodes = {
+  university: "UN-2024",
+  highSchool: "HS-2021"
+};
+
+// Validate secret code and display corresponding content
+async function validateSecretCode() {
+  const enteredCode = document.getElementById("secret-code-input").value.trim();
+
+  try {
+    const response = await fetch('https://infinity-academy.onrender.com/api/validateCode', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ code: enteredCode }),
     });
+
+    if (response.ok) {
+      const { studentType } = await response.json();
+      if (studentType === 'university') {
+        document.getElementById("university-content").classList.add("visible");
+        localStorage.setItem('studentType', 'university');  // Save student type
+      } else if (studentType === 'highSchool') {
+        document.getElementById("high-school-content").classList.add("visible");
+        localStorage.setItem('studentType', 'highSchool');  // Save student type
+      }
+      closeModal();
+    } else {
+      alert("Invalid secret code. Please try again.");
+    }
+  } catch (error) {
+    console.error('Error validating secret code:', error);
+  }
+}
+
+// Close the modal after validation
+function closeModal() {
+  document.getElementById("secret-code-modal").style.display = "none";
+}
+
+// Function to redirect high school students to the subject selection page
+function redirectToHighSchoolSubjects() {
+  window.location.href = 'https://infinity-academy.onrender.com/high-school-subjects.html';  // Adjust this path as necessary
+}
+
+// Function to redirect university students to the content selection page
+function redirectToUniversityContent() {
+  window.location.href = 'https://infinity-academy.onrender.com/UNI-Student.html';  // Adjust this path as necessary
+}
+
+// Check for saved student type on page load
+document.addEventListener('DOMContentLoaded', async () => {
+  const studentType = localStorage.getItem('studentType');
+  
+  if (studentType) {
+    // If student type is saved, show the respective content
+    if (studentType === 'university') {
+      document.getElementById("university-content").classList.add("visible");
+    } else if (studentType === 'highSchool') {
+      document.getElementById("high-school-content").classList.add("visible");
+    }
+  } else {
+    // If no student type is saved, show the modal for secret code input
+    document.getElementById("secret-code-modal").style.display = "block";
+  }
+});
+
   </script>
   
 
