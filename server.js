@@ -35,7 +35,7 @@ const pastPapersRoutes = require('./routes/pastPapersRoutes');
 const studyMaterialsRoutes = require('./routes/studyMaterialsRoutes');
 const quizzesRoutes = require('./routes/quizzesRoutes');
 const selectedSubjectsRoutes = require('./routes/selectedSubjectsRoutes');
-const validationRoutes = require('./routes/validationRoutes');
+const validationRoutes = require('./routes/validationRoutes'); // Only declare once
 const passwordCheckRoutes = require('./routes/passwordCheckRoutes');
 
 app.use('/api', userRoutes);
@@ -46,7 +46,7 @@ app.use('/api', pastPapersRoutes);
 app.use('/api', studyMaterialsRoutes);
 app.use('/api', quizzesRoutes);
 app.use('/api', selectedSubjectsRoutes);
-app.use('/api', validationRoutes);
+app.use('/api', validationRoutes); // Only use once
 app.use('/api', passwordCheckRoutes);
 
 // Backend validation for registration
@@ -67,10 +67,6 @@ app.post('/api/register', async (req, res) => {
   // For now, let's just return a success message
   res.status(200).json({ message: 'Registration successful' });
 });
-
-// Validation route for secret codes
-const validationRoutes = require('./routes/validationRoutes');
-app.use('/api', validationRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
