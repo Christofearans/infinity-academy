@@ -538,39 +538,6 @@ button:hover {
         document.getElementById('register-error').textContent = 'An error occurred during registration.';
       }
     }
-
-    // Login Functionality
-async function login() {
-  const username = document.getElementById('login-username').value;
-  const password = document.getElementById('login-password').value;
-
-  try {
-    const response = await fetch('http://localhost:3000/api/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ username, password }),
-    });
-
-    if (response.ok) {
-      const user = await response.json();
-      // Redirect based on role
-      if (user.role === 'admin') {
-        window.location.href = 'admin.html';
-      } else if (user.role === 'tutor') {
-        window.location.href = 'tutor.html';
-      } else if (user.role === 'student') {
-        window.location.href = 'student.html';
-      }
-    } else {
-      document.getElementById('login-error').textContent = 'Invalid username or password.';
-    }
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
-
   
   
     // Toggle between login and registration forms
@@ -618,6 +585,39 @@ async function login() {
   
       return strength;
     }
+
+    // Login Functionality
+async function login() {
+  const username = document.getElementById('login-username').value;
+  const password = document.getElementById('login-password').value;
+
+  try {
+    const response = await fetch('http://localhost:3000/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, password }),
+    });
+
+    if (response.ok) {
+      const user = await response.json();
+      // Redirect based on role
+      if (user.role === 'admin') {
+        window.location.href = 'admin.html';
+      } else if (user.role === 'tutor') {
+        window.location.href = 'tutor.html';
+      } else if (user.role === 'student') {
+        window.location.href = 'student.html';
+      }
+    } else {
+      document.getElementById('login-error').textContent = 'Invalid username or password.';
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
   
     // Function to open the modal
     function openModal() {
@@ -670,52 +670,51 @@ async function login() {
       document.getElementById('pause-btn').style.display = 'inline-block';
       document.getElementById('continue-btn').style.display = 'none';
     };
-  // Load announcements and display them
-async function loadAnnouncements() {
-  try {
-    const response = await fetch('http://your-public-ip-or-domain:3000/api/announcements');
-    const storedAnnouncements = await response.json();
-    const announcementSlideshow = document.getElementById('announcement-slideshow');
-    announcementSlideshow.innerHTML = ''; // Clear existing announcements
-
-    // Sort announcements so the latest appears first
-    storedAnnouncements.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-
-    storedAnnouncements.forEach((announcement, index) => {
-      const announcementItem = document.createElement('div');
-      announcementItem.classList.add('announcement');
-      if (index === 0) announcementItem.classList.add('active'); // Make the first announcement active
-
-      const formattedTime = formatDateTime(announcement.timestamp);
-
-      // Use stored HTML for image and content
-      const imageHtml = announcement.image || ''; // Directly render provided HTML
-      const titleHtml = announcement.title 
-        ? `<div class="announcement-title">${announcement.title}</div>` 
-        : '';
-      const contentHtml = announcement.content 
-        ? `<div class="announcement-text">${announcement.content}</div>` 
-        : '';
-      const timeHtml = `<div class="announcement-time">Posted: ${formattedTime}</div>`;
-
-      // Combine content with the time display
-      announcementItem.innerHTML = `
-        ${imageHtml}
-        ${titleHtml}
-        ${contentHtml}
-        ${timeHtml}
-      `;
-      announcementSlideshow.appendChild(announcementItem);
-    });
-
-    // After loading announcements, start the slideshow if necessary
-    startAnnouncementSlide();
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
-
-    
+  
+    // Load announcements and display them
+    async function loadAnnouncements() {
+      try {
+        const response = await fetch('http://localhost:3000/api/announcements');
+        const storedAnnouncements = await response.json();
+        const announcementSlideshow = document.getElementById('announcement-slideshow');
+        announcementSlideshow.innerHTML = ''; // Clear existing announcements
+  
+        // Sort announcements so the latest appears first
+        storedAnnouncements.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+  
+        storedAnnouncements.forEach((announcement, index) => {
+          const announcementItem = document.createElement('div');
+          announcementItem.classList.add('announcement');
+          if (index === 0) announcementItem.classList.add('active'); // Make the first announcement active
+  
+          const formattedTime = formatDateTime(announcement.timestamp);
+  
+          // Use stored HTML for image and content
+          const imageHtml = announcement.image || ''; // Directly render provided HTML
+          const titleHtml = announcement.title 
+            ? `<div class="announcement-title">${announcement.title}</div>` 
+            : '';
+          const contentHtml = announcement.content 
+            ? `<div class="announcement-text">${announcement.content}</div>` 
+            : '';
+          const timeHtml = `<div class="announcement-time">Posted: ${formattedTime}</div>`;
+  
+          // Combine content with the time display
+          announcementItem.innerHTML = `
+            ${imageHtml}
+            ${titleHtml}
+            ${contentHtml}
+            ${timeHtml}
+          `;
+          announcementSlideshow.appendChild(announcementItem);
+        });
+  
+        // After loading announcements, start the slideshow if necessary
+        startAnnouncementSlide();
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
   
     // Initialize the page
     document.addEventListener('DOMContentLoaded', () => {
