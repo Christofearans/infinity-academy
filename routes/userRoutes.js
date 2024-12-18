@@ -57,6 +57,22 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// Other routes...
+// Login a user
+router.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const user = await User.findOne({ username });
+    if (!user || user.password !== password) {
+      return res.status(400).json({ message: 'Invalid username or password.' });
+    }
+
+    res.json({ role: user.role, username: user.username });
+  } catch (error) {
+    console.error('Error during login:', error);
+    res.status(500).json({ message: 'Server error during login.' });
+  }
+});
 
 module.exports = router;
+
