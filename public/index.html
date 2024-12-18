@@ -536,6 +536,40 @@ button:hover {
         document.getElementById('register-error').textContent = 'An error occurred during registration.';
       }
     }
+
+
+    // Login Functionality
+async function login() {
+  const username = document.getElementById('login-username').value;
+  const password = document.getElementById('login-password').value;
+
+  try {
+    const response = await fetch('https://infinity-academy.onrender.com/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, password }),
+    });
+
+    if (response.ok) {
+      const user = await response.json();
+      // Redirect based on role
+      if (user.role === 'admin') {
+        window.location.href = 'admin.html';
+      } else if (user.role === 'tutor') {
+        window.location.href = 'tutor.html';
+      } else if (user.role === 'student') {
+        window.location.href = 'student.html';
+      }
+    } else {
+      document.getElementById('login-error').textContent = 'Invalid username or password.';
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
   
   
     // Toggle between login and registration forms
@@ -583,38 +617,6 @@ button:hover {
   
       return strength;
     }
-
-    // Login Functionality
-async function login() {
-  const username = document.getElementById('login-username').value;
-  const password = document.getElementById('login-password').value;
-
-  try {
-    const response = await fetch('http://localhost:3000/api/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ username, password }),
-    });
-
-    if (response.ok) {
-      const user = await response.json();
-      // Redirect based on role
-      if (user.role === 'admin') {
-        window.location.href = 'admin.html';
-      } else if (user.role === 'tutor') {
-        window.location.href = 'tutor.html';
-      } else if (user.role === 'student') {
-        window.location.href = 'student.html';
-      }
-    } else {
-      document.getElementById('login-error').textContent = 'Invalid username or password.';
-    }
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
 
   
     // Function to open the modal
