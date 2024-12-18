@@ -115,12 +115,11 @@
   margin-bottom: 10px;
 }
 
-/* Announcement individual item styling */
-.announcement {
-  font-size: 1.1em;
-  display: none;
-  margin-bottom: 20px;
-}
+/* Announcement individual item styling */ 
+.announcement { opacity: 0; 
+               transition: 
+                 opacity 1s ease-in-out; 
+               position: absolute; }
 
 /* Announcement image styling */
 .announcement img {
@@ -136,9 +135,9 @@
 }
 
 /* Make the active announcement visible */
-.active {
-  display: block;
-}
+.announcement.active { 
+  opacity: 1; }
+    
 /* Announcements styling */
 #announcements {
   background-color: #333;
@@ -366,16 +365,6 @@ button:hover {
     right: auto; /* Remove right alignment */
     left: 5%; /* Center horizontally */
   }
-}
-
-    .announcement {
-  opacity: 0;
-  transition: opacity 1s ease-in-out;
-  position: absolute;
-}
-
-.announcement.active {
-  opacity: 1;
 }
 
 
