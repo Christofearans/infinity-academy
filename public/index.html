@@ -698,12 +698,18 @@ async function loadAnnouncements() {
 
       const formattedTime = formatDateTime(announcement.timestamp);
 
-      const imageHtml = announcement.image ? `<img src="${announcement.image}" alt="Announcement Image" style="max-width: 100px;">` : '';
-      const contentHtml = announcement.content ? `<div class="announcement-text">${announcement.content}</div>` : '';
+      const imageHtml = announcement.image || ''; // Directly render provided HTML
+      const titleHtml = announcement.title 
+        ? `<div class="announcement-title">${announcement.title}</div>` 
+        : '';
+      const contentHtml = announcement.content 
+        ? `<div class="announcement-text">${announcement.content}</div>` 
+        : '';
       const timeHtml = `<div class="announcement-time">Posted: ${formattedTime}</div>`;
 
       announcementItem.innerHTML = `
         ${imageHtml}
+        ${titleHtml}
         ${contentHtml}
         ${timeHtml}
       `;
@@ -717,20 +723,6 @@ async function loadAnnouncements() {
   }
 }
 
-// Helper function to format date and time
-const formatDateTime = (dateTimeString) => {
-  const dateObj = new Date(dateTimeString);
-  const options = { 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric', 
-    hour: '2-digit', 
-    minute: '2-digit', 
-    second: '2-digit' 
-  };
-  return dateObj.toLocaleString('en-US', options);
-};
-
 // Initialize the page
 document.addEventListener('DOMContentLoaded', () => {
   loadAnnouncements();
@@ -739,6 +731,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('pause-btn').addEventListener('click', pauseSlideshow);
   document.getElementById('continue-btn').addEventListener('click', continueSlideshow);
 });
+
 
 
 
