@@ -6,87 +6,183 @@
   <title>Tutor Dashboard - Infinity Academy</title>
 
 
-  <style>
-  /* General Popup Overlay */
-  .overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
+<style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
 
-  /* Popup Box */
-  .popup {
-    background-color: #fff;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    width: 90%; /* Default width */
-    max-width: 350px; /* Prevents it from being too large */
-    box-sizing: border-box;
-  }
+    header {
+      background-color: #333;
+      color: #fff;
+      width: 100%;
+      padding: 20px;
+      text-align: center;
+    }
 
-  /* Input Field */
-  .popup input {
-    width: 100%; /* Full width on smaller devices */
-    padding: 10px;
-    font-size: 1rem;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
-  }
+    header h1 {
+      font-size: 2.5rem;
+    }
 
-  /* Buttons */
-  .popup button {
-    width: 100%; /* Buttons fit screen width on small devices */
-    padding: 10px;
-    font-size: 1rem;
-    background-color: #00b3e6;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
+    header p {
+      font-size: 1.2rem;
+    }
 
-  .popup button:hover {
-    background-color: #008c99;
-  }
+    .dashboard-container {
+      width: 80%;
+      max-width: 1200px;
+      margin-top: 20px;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 80px; /* Ensures space for footer */
+    }
 
-  /* Error Message */
-  .popup .error-message {
-    color: red;
-    font-size: 0.9rem;
-    margin-top: 10px;
-  }
+    .dashboard-container h2 {
+      color: #00b3e6;
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
 
-  /* Responsive Fix for Popup */
-  @media (max-width: 480px) {
+    .dashboard-container p {
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+    }
+
+    .functions {
+      display: flex;
+      justify-content: space-around;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .functions div {
+      background-color: #e6e6e6;
+      padding: 20px;
+      width: 45%;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .functions div h3 {
+      color: #00b3e6;
+      margin-bottom: 10px;
+    }
+
+    .functions div button {
+      background-color: #00b3e6;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .functions div button:hover {
+      background-color: #008c99;
+    }
+
+    /* Popup overlay for password input */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: none; /* Hidden by default */
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
     .popup {
-      width: 90%; /* Smaller width on very small screens */
-      padding: 10px; /* Reduced padding */
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 400px;
     }
 
     .popup input {
-      padding: 8px;
-      font-size: 0.9rem;
+      padding: 10px;
+      font-size: 1rem;
+      margin-right: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
     }
 
     .popup button {
-      padding: 8px;
-      font-size: 0.9rem;
+      padding: 10px 15px;
+      background-color: #00b3e6;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
     }
-  }
-</style>
 
+    .popup button:hover {
+      background-color: #008c99;
+    }
 
+    .popup .error-message {
+      color: red;
+      margin-top: 10px;
+    }
+
+    .whatsapp-link {
+      margin-top: 20px;
+      display: block;
+      text-decoration: none;
+      color: #00b3e6;
+      font-weight: bold;
+    }
+
+    .whatsapp-link:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      background-color: #333;
+      color: #fff;
+      padding: 10px;
+      text-align: center;
+      width: 100%;
+      position: relative;
+      bottom: 0;
+      margin-top: auto;
+    }
+
+    footer a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .functions {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .functions div {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
   <header>
