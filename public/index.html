@@ -471,74 +471,121 @@ button:hover {
   
   <script>
     // Register Functionality
-    async function register() {
-      const username = document.getElementById('register-username').value.trim();
-      const password = document.getElementById('register-password').value;
-      const passwordConfirm = document.getElementById('register-password-confirm').value;
-      const secretCode = document.getElementById('secret-code').value.trim();
-      const learnerType = document.getElementById('register-learner-type').value;
-  
-      console.log('Learner Type:', learnerType);
-      console.log('Entered Secret Code:', secretCode);
-  
-      // Validate password length and special character requirement
-      const specialChars = /[!@#$%^&*(),.?":{}|<>]/;
-      if (password.length < 6 || !specialChars.test(password)) {
-        document.getElementById('register-error').textContent = 'Password must be at least 6 characters long and include a special character.';
-        return;
-      }
-  
-      // Validate password match
-      if (password !== passwordConfirm) {
-        document.getElementById('register-error').textContent = 'Passwords do not match.';
-        return;
-      }
-  
-      // Validate secret code based on user type
-      let validCode = false;
-      const secretCodeMap = {
-        student: ['UN-2024', 'HS-2021'],
-        tutor: ['T-2023'],
-        admin: ['AD-12345']
-      };
-  
-      if (secretCodeMap[learnerType]?.includes(secretCode)) {
-        validCode = true;
-      }
-  
-      console.log('Is Secret Code Valid?:', validCode);
-  
-      if (!validCode) {
-        document.getElementById('secret-code-error').textContent = `Invalid secret code for ${learnerType}s.`;
-        return;
-      }
-  
-      // Proceed with registration
-      try { const response = await fetch('https://infinity-academy.onrender.com/api/register', { 
-       method: 'POST', 
-       headers: { 'Content-Type': 'application/json', 
-        }, 
-        body: JSON.stringify({ username, password, role: learnerType, secretCode }), 
-      });
-  
-        console.log('Response Status:', response.status);
-        console.log('Response Data:', await response.text()); // log response text for more detail
-  
-        if (response.ok) {
-          alert('Registration successful! Please login to continue.');
-          window.location.href = 'index.html';
-        } else {
-          const errorData = await response.json();
-          document.getElementById('register-error').textContent = errorData.message;
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        document.getElementById('register-error').textContent = 'An error occurred during registration.';
-      }
+async function register() {
+  const username = document.getElementById('register-username').value.trim();
+  const password = document.getElementById('register-password').value;
+  const passwordConfirm = document.getElementById('register-password-confirm').value;
+  const secretCode = document.getElementById('secret-code').value.trim();
+  const learnerType = document.getElementById('register-learner-type').value;
+
+  console.log('Learner Type:', learnerType);
+  console.log('Entered Secret Code:', secretCode);
+
+  // Validate password length and special character requirement
+  const specialChars = /[!@#$%^&*(),.?":{}|<>]/;
+  if (password.length < 6 || !specialChars.test(password)) {
+    document.getElementById('register-error').textContent = 'Password must be at least 6 characters long and include a special character.';
+    return;
+  }
+
+  // Validate password match
+  if (password !== passwordConfirm) {
+    document.getElementById('register-error').textContent = 'Passwords do not match.';
+    return;
+  }
+
+  // Validate secret code based on user type
+  let validCode = false;
+  const secretCodeMap = {
+    student: ['UN-2024', 'HS-2021'],
+    tutor: ['T-2023'],
+    admin: ['AD-12345']
+  };
+
+  if (secretCodeMap[learnerType]?.includes(secretCode)) {
+    validCode = true;
+  }
+
+  console.log('Is Secret Code Valid?:', validCode);
+
+  if (!validCode) {
+    document.getElementById('secret-code-error').textContent = `Invalid secret code for ${learnerType}s.`;
+    return;
+  }
+
+  // Proceed with registration
+  try {
+    const response = await fetch('https://infinity-academy.onrender.com/api/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, password, role: learnerType, secretCode }),
+    });
+
+    console.log('Response Status:', response.status);
+    console.log('Response Data:', await response.text()); // log response text for more detail
+
+    if (response.ok) {
+      alert('Registration successful! Please login to continue.');
+      window.location.href = 'index.html';
+    } else {
+      const errorData = await response.json();
+      document.getElementById('register-error').textContent = errorData.message;
     }
+  } catch (error) {
+    console.error('Error:', error);
+    document.getElementById('register-error').textContent = 'An error occurred during registration.';
+  }
+}
 
+// Toggle between login and registration forms
+function toggleForm() {
+  const loginForm = document.getElementById('login-form');
+  const registerForm = document.getElementById('register-form');
+  loginForm.classList.toggle('hidden');
+  registerForm.classList.toggle('hidden');
+}
 
-  // Login Functionality
+// Password Strength Functionality
+const passwordInput = document.getElementById('register-password');
+const passwordStrength = document.createElement('div');
+passwordInput.insertAdjacentElement('afterend', passwordStrength);
+
+passwordInput.addEventListener('input', () => {
+  const passwordValue = passwordInput.value;
+  const strength = getPasswordStrength(passwordValue);
+  passwordStrength.textContent = strength.text;
+  passwordStrength.className = `password-strength ${strength.class}`;
+});
+
+function getPasswordStrength(password) {
+  const strength = {
+    text: '',
+    class: ''
+  };
+
+  const lengthCriteria = password.length >= 8;
+  const lowercase = /[a-z]/.test(password);
+  const uppercase = /[A-Z]/.test(password);
+  const numbers = /\d/.test(password);
+  const specialChars = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+  if (lengthCriteria && lowercase && uppercase && numbers && specialChars) {
+    strength.text = 'Strong';
+    strength.class = 'strong';
+  } else if (lengthCriteria && (lowercase || uppercase) && numbers) {
+    strength.text = 'Moderate';
+    strength.class = 'moderate';
+  } else {
+    strength.text = 'Weak';
+    strength.class = 'weak';
+  }
+
+  return strength;
+}
+
+// Login Functionality
 async function login() {
   const username = document.getElementById('login-username').value;
   const password = document.getElementById('login-password').value;
@@ -570,124 +617,59 @@ async function login() {
   }
 }
 
-  
-  
-    // Toggle between login and registration forms
-    function toggleForm() {
-      const loginForm = document.getElementById('login-form');
-      const registerForm = document.getElementById('register-form');
-      loginForm.classList.toggle('hidden');
-      registerForm.classList.toggle('hidden');
-    }
-  
-    // Password Strength Functionality
-    const passwordInput = document.getElementById('register-password');
-    const passwordStrength = document.createElement('div');
-    passwordInput.insertAdjacentElement('afterend', passwordStrength);
-  
-    passwordInput.addEventListener('input', () => {
-      const passwordValue = passwordInput.value;
-      const strength = getPasswordStrength(passwordValue);
-      passwordStrength.textContent = strength.text;
-      passwordStrength.className = `password-strength ${strength.class}`;
-    });
-  
-    function getPasswordStrength(password) {
-      const strength = {
-        text: '',
-        class: ''
-      };
-  
-      const lengthCriteria = password.length >= 8;
-      const lowercase = /[a-z]/.test(password);
-      const uppercase = /[A-Z]/.test(password);
-      const numbers = /\d/.test(password);
-      const specialChars = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-  
-      if (lengthCriteria && lowercase && uppercase && numbers && specialChars) {
-        strength.text = 'Strong';
-        strength.class = 'strong';
-      } else if (lengthCriteria && (lowercase || uppercase) && numbers) {
-        strength.text = 'Moderate';
-        strength.class = 'moderate';
-      } else {
-        strength.text = 'Weak';
-        strength.class = 'weak';
-      }
-  
-      return strength;
-    }
+// Function to open the modal
+function openModal() {
+  document.getElementById('modal').style.display = 'flex';
+}
 
-  
-    // Function to open the modal
-    function openModal() {
-      document.getElementById('modal').style.display = 'flex';
-    }
-  
-    // Function to close the modal
-    function closeModal() {
-      document.getElementById('modal').style.display = 'none';
-    }
-  
-    // Helper function to format date and time
-    function formatDateTime(dateTimeString) {
-      const dateObj = new Date(dateTimeString);
-      const options = { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric', 
-        hour: 'numeric', 
-        minute: 'numeric',
-        hour12: true 
-      };
-      return dateObj.toLocaleString('en-US', options);
-    }
-  
-    let currentAnnouncement = 0;
-    let announcementInterval;
-  
-    const startAnnouncementSlide = () => {
-      const announcements = document.querySelectorAll('.announcement');
-      if (announcements.length > 0) {
-        announcementInterval = setInterval(() => {
-          announcements[currentAnnouncement].classList.remove('active');
-          currentAnnouncement = (currentAnnouncement + 1) % announcements.length;
-          announcements[currentAnnouncement].classList.add('active');
-        }, 7000);
-      }
-    };
-  
-    // Pause functionality
-    const pauseSlideshow = () => {
-      clearInterval(announcementInterval);
-      document.getElementById('pause-btn').style.display = 'none';
-      document.getElementById('continue-btn').style.display = 'inline-block';
-    };
-  
-    // Continue functionality
-    const continueSlideshow = () => {
-      startAnnouncementSlide();
-      document.getElementById('pause-btn').style.display = 'inline-block';
-      document.getElementById('continue-btn').style.display = 'none';
-    };
-  
-    // Load announcements and display them
-   const formatDateTime = (timestamp) => {
-  const date = new Date(timestamp);
-  if (isNaN(date.getTime())) {
-    return 'Invalid Date';
-  }
+// Function to close the modal
+function closeModal() {
+  document.getElementById('modal').style.display = 'none';
+}
+
+// Helper function to format date and time
+function formatDateTime(dateTimeString) {
+  const dateObj = new Date(dateTimeString);
   const options = { 
     year: 'numeric', 
     month: 'long', 
     day: 'numeric', 
-    hour: '2-digit', 
-    minute: '2-digit', 
-    second: '2-digit' 
+    hour: 'numeric', 
+    minute: 'numeric',
+    hour12: true 
   };
-  return date.toLocaleString('en-US', options);
+  return dateObj.toLocaleString('en-US', options);
+}
+
+let currentAnnouncement = 0;
+let announcementInterval;
+
+const startAnnouncementSlide = () => {
+  const announcements = document.querySelectorAll('.announcement');
+  if (announcements.length > 0) {
+    announcementInterval = setInterval(() => {
+      announcements[currentAnnouncement].classList.remove('active');
+      currentAnnouncement = (currentAnnouncement + 1) % announcements.length;
+      announcements[currentAnnouncement].classList.add('active');
+    }, 7000);
+  }
 };
 
+// Pause functionality
+const pauseSlideshow = () => {
+  clearInterval(announcementInterval);
+  document.getElementById('pause-btn').style.display = 'none';
+  document.getElementById('continue-btn').style.display = 'inline-block';
+};
+
+// Continue functionality
+const continueSlideshow = () => {
+  startAnnouncementSlide();
+  document.getElementById('pause-btn').style.display = 'inline-block';
+  document.getElementById('continue-btn').style.display = 'none';
+};
+
+// Load announcements and display them
 async function loadAnnouncements() {
   try {
     const response = await fetch('https://infinity-academy.onrender.com/api/announcements');
@@ -695,6 +677,7 @@ async function loadAnnouncements() {
     const announcementSlideshow = document.getElementById('announcement-slideshow');
     announcementSlideshow.innerHTML = ''; // Clear existing announcements
 
+    // Sort announcements so the latest appears first
     storedAnnouncements.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
     storedAnnouncements.forEach((announcement, index) => {
@@ -704,7 +687,7 @@ async function loadAnnouncements() {
 
       const formattedTime = formatDateTime(announcement.timestamp);
 
-      const imageHtml = announcement.image ? `<img src="${announcement.image}" alt="Announcement Image">` : '';
+      const imageHtml = announcement.image || ''; // Directly render provided HTML
       const titleHtml = announcement.title 
         ? `<div class="announcement-title">${announcement.title}</div>` 
         : '';
@@ -713,18 +696,27 @@ async function loadAnnouncements() {
         : '';
       const timeHtml = `<div class="announcement-time">Posted: ${formattedTime}</div>`;
 
-      announcementItem.innerHTML = `${imageHtml}${titleHtml}${contentHtml}${timeHtml}`;
+      announcementItem.innerHTML = `
+        ${imageHtml}
+        ${titleHtml}
+        ${contentHtml}
+        ${timeHtml}
+      `;
       announcementSlideshow.appendChild(announcementItem);
     });
 
+    // After loading announcements, start the slideshow if necessary
     startAnnouncementSlide();
   } catch (error) {
     console.error('Error:', error);
   }
 }
 
+// Initialize the page
 document.addEventListener('DOMContentLoaded', () => {
   loadAnnouncements();
+  
+  // Set up event listeners for the Pause and Continue buttons after the page loads
   document.getElementById('pause-btn').addEventListener('click', pauseSlideshow);
   document.getElementById('continue-btn').addEventListener('click', continueSlideshow);
 });
