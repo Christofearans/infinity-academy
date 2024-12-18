@@ -704,7 +704,7 @@ async function loadAnnouncements() {
 
       const formattedTime = formatDateTime(announcement.timestamp);
 
-      const imageHtml = announcement.image || ''; // Directly render provided HTML
+      const imageHtml = announcement.image ? `<img src="${announcement.image}" alt="Announcement Image">` : '';
       const titleHtml = announcement.title 
         ? `<div class="announcement-title">${announcement.title}</div>` 
         : '';
@@ -722,6 +722,12 @@ async function loadAnnouncements() {
     console.error('Error:', error);
   }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadAnnouncements();
+  document.getElementById('pause-btn').addEventListener('click', pauseSlideshow);
+  document.getElementById('continue-btn').addEventListener('click', continueSlideshow);
+});
 
   </script>
 
