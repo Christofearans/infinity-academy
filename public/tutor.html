@@ -226,59 +226,60 @@
   </footer>
 
   <script>
-    // Show the popup overlay when a button is clicked
-    function showPopup(correctPassword) {
-      document.getElementById('password-popup').style.display = 'flex'; // Show the overlay
-      window.correctPassword = correctPassword;
-      
-      // Show relevant WhatsApp link
-      if (correctPassword === 'HS-request-Pass') {
-        document.getElementById('whatsapp-link').style.display = 'block';
-        document.getElementById('whatsapp-link-university').style.display = 'none';
-      } else {
-        document.getElementById('whatsapp-link').style.display = 'none';
-        document.getElementById('whatsapp-link-university').style.display = 'block';
-      }
+ // Show the popup overlay when a button is clicked
+function showPopup(correctPassword) {
+  document.getElementById('password-popup').style.display = 'flex'; // Show the overlay
+  window.correctPassword = correctPassword;
+
+  // Show relevant WhatsApp link
+  if (correctPassword === 'HS-request-Pass') {
+    document.getElementById('whatsapp-link').style.display = 'block';
+    document.getElementById('whatsapp-link-university').style.display = 'none';
+  } else {
+    document.getElementById('whatsapp-link').style.display = 'none';
+    document.getElementById('whatsapp-link-university').style.display = 'block';
+  }
+}
+
+// Check the entered password
+async function checkPassword() {
+  const enteredPassword = document.getElementById('password-input').value;
+  const errorMessage = document.getElementById('error-message');
+
+  try {
+    const response = await fetch('https://infinity-academy.onrender.com/api/checkPassword', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ enteredPassword, correctPassword: window.correctPassword }),
+    });
+
+    if (response.ok) {
+      const { redirectUrl } = await response.json();
+      window.location.href = redirectUrl;
+    } else {
+      errorMessage.textContent = 'Incorrect password. Please try again.';
     }
-  
-    // Check the entered password
-    async function checkPassword() {
-      const enteredPassword = document.getElementById('password-input').value;
-      const errorMessage = document.getElementById('error-message');
-  
-      try {
-        const response = await fetch('http://localhost:3000/api/checkPassword', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ enteredPassword, correctPassword: window.correctPassword }),
-        });
-  
-        if (response.ok) {
-          const { redirectUrl } = await response.json();
-          window.location.href = redirectUrl;
-        } else {
-          errorMessage.textContent = 'Incorrect password. Please try again.';
-        }
-      } catch (error) {
-        console.error('Error checking password:', error);
-      }
-    }
-  
-    // Go back to the previous page
-    function goBack() {
-      if (window.history.length > 1) {
-        window.history.back();  // Go back to the previous page
-      } else {
-        window.location.href = 'tutor.html';  // Fallback to the dashboard page if no history
-      }
-    }
-  
-    // Function to handle the logout action
-    function logout() {
-      window.location.href = 'index.html';  // Change to your actual login page URL
-    }
+  } catch (error) {
+    console.error('Error checking password:', error);
+  }
+}
+
+// Go back to the previous page
+function goBack() {
+  if (window.history.length > 1) {
+    window.history.back();  // Go back to the previous page
+  } else {
+    window.location.href = 'tutor.html';  // Fallback to the dashboard page if no history
+  }
+}
+
+// Function to handle the logout action
+function logout() {
+  window.location.href = 'index.html';  // Change to your actual login page URL
+}
+
   </script>
   
   
