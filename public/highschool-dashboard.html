@@ -134,152 +134,153 @@
     &copy; 2024 Infinity Academy - Tutor Dashboard
   </footer>
   
-  <script>
-    async function getDataFromBackend(endpoint) {
-      try {
-        const response = await fetch(`http://localhost:3000/api/${endpoint}`);
-        if (response.ok) {
-          return await response.json();
-        } else {
-          console.error(`Failed to fetch ${endpoint}`);
-          return [];
-        }
-      } catch (error) {
-        console.error(`Error fetching ${endpoint}:`, error);
-        return [];
-      }
+  <script>async function getDataFromBackend(endpoint) {
+  try {
+    const response = await fetch(`https://infinity-academy.onrender.com/api/${endpoint}`);
+    if (response.ok) {
+      return await response.json();
+    } else {
+      console.error(`Failed to fetch ${endpoint}`);
+      return [];
     }
-  
-    async function publishAnnouncement() {
-      const announcementText = document.getElementById("announcement-text").value;
-      if (announcementText.trim() === "") {
-        alert("Please enter announcement text.");
-        return;
-      }
-      const currentDate = new Date().toLocaleString();
-      try {
-        const response = await fetch('http://localhost:3000/api/announcement', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ text: announcementText, date: currentDate }),
-        });
-        if (response.ok) {
-          document.getElementById("announcement-text").value = "";
-          displayAnnouncements();
-        } else {
-          alert('Failed to publish announcement.');
-        }
-      } catch (error) {
-        console.error('Error publishing announcement:', error);
-      }
-    }
-  
-    async function displayAnnouncements() {
-      const announcements = await getDataFromBackend('announcements');
-      const announcementList = document.getElementById("announcement-list");
-      announcementList.innerHTML = "";
-      announcements.forEach((announcement, index) => {
-        const div = document.createElement("div");
-        div.classList.add("announcement-item");
-        div.innerHTML = `
-          <div>
-            <strong>${announcement.text}</strong><br>
-            <small>${announcement.date}</small>
-          </div>
-          <button onclick="deleteAnnouncement('${announcement._id}')">Delete</button>
-        `;
-        announcementList.appendChild(div);
-      });
-    }
-  
-    async function deleteAnnouncement(id) {
-      try {
-        const response = await fetch(`http://localhost:3000/api/announcement/${id}`, {
-          method: 'DELETE',
-        });
-        if (response.ok) {
-          displayAnnouncements();
-        } else {
-          alert('Failed to delete announcement.');
-        }
-      } catch (error) {
-        console.error('Error deleting announcement:', error);
-      }
-    }
-  
-    async function uploadMaterial() {
-      const subject = document.getElementById("material-subject").value;
-      const type = document.getElementById("material-type").value;
-      const title = document.getElementById("material-title").value;
-      const link = document.getElementById("material-link").value;
-      if (title.trim() === "" || link.trim() === "") {
-        alert("Please fill in both title and link.");
-        return;
-      }
-      try {
-        const response = await fetch('http://localhost:3000/api/studyMaterials', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ subject, type, title, link }),
-        });
-        if (response.ok) {
-          document.getElementById("material-title").value = "";
-          document.getElementById("material-link").value = "";
-          displayMaterials();
-        } else {
-          alert('Failed to upload material.');
-        }
-      } catch (error) {
-        console.error('Error uploading material:', error);
-      }
-    }
-  
-    async function displayMaterials() {
-      const materials = await getDataFromBackend('studyMaterials');
-      const materialList = document.getElementById("material-list");
-      materialList.innerHTML = "";
-      materials.forEach((material, index) => {
-        const div = document.createElement("div");
-        div.classList.add("announcement-item");
-        div.innerHTML = `
-          <div>
-            <strong>${material.title}</strong><br>
-            <small>${material.subject} - ${material.type}</small><br>
-            <a href="${material.link}" target="_blank">Link to Material</a>
-          </div>
-          <button onclick="deleteMaterial('${material._id}')">Delete</button>
-        `;
-        materialList.appendChild(div);
-      });
-    }
-  
-    async function deleteMaterial(id) {
-      try {
-        const response = await fetch(`http://localhost:3000/api/studyMaterials/${id}`, {
-          method: 'DELETE',
-        });
-        if (response.ok) {
-          displayMaterials();
-        } else {
-          alert('Failed to delete material.');
-        }
-      } catch (error) {
-        console.error('Error deleting material:', error);
-      }
-    }
-  
-    function goToConfirmationPage() {
-      window.location.href = "high-school-subjects.html";
-    }
-  
-    document.addEventListener("DOMContentLoaded", function () {
-      displayAnnouncements();
-      displayMaterials();
+  } catch (error) {
+    console.error(`Error fetching ${endpoint}:`, error);
+    return [];
+  }
+}
+
+async function publishAnnouncement() {
+  const announcementText = document.getElementById("announcement-text").value;
+  if (announcementText.trim() === "") {
+    alert("Please enter announcement text.");
+    return;
+  }
+  const currentDate = new Date().toLocaleString();
+  try {
+    const response = await fetch('https://infinity-academy.onrender.com/api/announcement', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ text: announcementText, date: currentDate }),
     });
+    if (response.ok) {
+      document.getElementById("announcement-text").value = "";
+      displayAnnouncements();
+    } else {
+      alert('Failed to publish announcement.');
+    }
+  } catch (error) {
+    console.error('Error publishing announcement:', error);
+  }
+}
+
+async function displayAnnouncements() {
+  const announcements = await getDataFromBackend('announcements');
+  const announcementList = document.getElementById("announcement-list");
+  announcementList.innerHTML = "";
+  announcements.forEach((announcement, index) => {
+    const div = document.createElement("div");
+    div.classList.add("announcement-item");
+    div.innerHTML = `
+      <div>
+        <strong>${announcement.text}</strong><br>
+        <small>${announcement.date}</small>
+      </div>
+      <button onclick="deleteAnnouncement('${announcement._id}')">Delete</button>
+    `;
+    announcementList.appendChild(div);
+  });
+}
+
+async function deleteAnnouncement(id) {
+  try {
+    const response = await fetch(`https://infinity-academy.onrender.com/api/announcement/${id}`, {
+      method: 'DELETE',
+    });
+    if (response.ok) {
+      displayAnnouncements();
+    } else {
+      alert('Failed to delete announcement.');
+    }
+  } catch (error) {
+    console.error('Error deleting announcement:', error);
+  }
+}
+
+async function uploadMaterial() {
+  const subject = document.getElementById("material-subject").value;
+  const type = document.getElementById("material-type").value;
+  const title = document.getElementById("material-title").value;
+  const link = document.getElementById("material-link").value;
+  if (title.trim() === "" || link.trim() === "") {
+    alert("Please fill in both title and link.");
+    return;
+  }
+  try {
+    const response = await fetch('https://infinity-academy.onrender.com/api/studyMaterials', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ subject, type, title, link }),
+    });
+    if (response.ok) {
+      document.getElementById("material-title").value = "";
+      document.getElementById("material-link").value = "";
+      displayMaterials();
+    } else {
+      alert('Failed to upload material.');
+    }
+  } catch (error) {
+    console.error('Error uploading material:', error);
+  }
+}
+
+async function displayMaterials() {
+  const materials = await getDataFromBackend('studyMaterials');
+  const materialList = document.getElementById("material-list");
+  materialList.innerHTML = "";
+  materials.forEach((material, index) => {
+    const div = document.createElement("div");
+    div.classList.add("announcement-item");
+    div.innerHTML = `
+      <div>
+        <strong>${material.title}</strong><br>
+        <small>${material.subject} - ${material.type}</small><br>
+        <a href="${material.link}" target="_blank">Link to Material</a>
+      </div>
+      <button onclick="deleteMaterial('${material._id}')">Delete</button>
+    `;
+    materialList.appendChild(div);
+  });
+}
+
+async function deleteMaterial(id) {
+  try {
+    const response = await fetch(`https://infinity-academy.onrender.com/api/studyMaterials/${id}`, {
+      method: 'DELETE',
+    });
+    if (response.ok) {
+      displayMaterials();
+    } else {
+      alert('Failed to delete material.');
+    }
+  } catch (error) {
+    console.error('Error deleting material:', error);
+  }
+}
+
+function goToConfirmationPage() {
+  window.location.href = "high-school-subjects.html";
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  displayAnnouncements();
+  displayMaterials();
+});
+
+
   </script>
   
 </body>
