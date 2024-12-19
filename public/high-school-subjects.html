@@ -136,118 +136,134 @@
   &copy; 2024 Infinity Academy - Student Dashboard
 </footer>
 <script>
-    async function getDataFromBackend(endpoint) {
-      try {
-        const response = await fetch(`http://localhost:3000/api/${endpoint}`);
-        if (response.ok) {
-          return await response.json();
-        } else {
-          console.error(`Failed to fetch ${endpoint}`);
-          return [];
-        }
-      } catch (error) {
-        console.error(`Error fetching ${endpoint}:`, error);
-        return [];
-      }
+   async function getDataFromBackend(endpoint) {
+  try {
+    const response = await fetch(`https://infinity-academy.onrender.com/api/${endpoint}`);
+    if (response.ok) {
+      return await response.json();
+    } else {
+      console.error(`Failed to fetch ${endpoint}`);
+      return [];
     }
-  
-    async function saveSelectedSubjects() {
-      const selectedSubjects = Array.from(document.querySelectorAll('input[name="subject"]:checked')).map(input => input.value);
-      try {
-        const response = await fetch('http://localhost:3000/api/selectedSubjects', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ selectedSubjects }),
-        });
-        if (response.ok) {
-          updateSubjectDisplay();
-          loadSubjectMaterials();
-        } else {
-          alert('Failed to save selected subjects.');
-        }
-      } catch (error) {
-        console.error('Error saving selected subjects:', error);
-      }
-    }
-  
-    async function updateSubjectDisplay() {
-      const selectedSubjects = await getDataFromBackend('selectedSubjects');
-      const subjectDisplay = document.getElementById('subject-display');
-      const subjectSelection = document.getElementById('subject-selection');
-      const subjectMessage = document.getElementById('subject-message');
-  
-      subjectSelection.style.display = 'none';
-      subjectDisplay.style.display = 'block';
-  
-      if (selectedSubjects.length > 0) {
-        subjectMessage.textContent = 'Your major subjects: ' + selectedSubjects.join(', ');
-      } else {
-        subjectMessage.textContent = 'You haven\'t selected any subjects yet.';
-      }
-    }
-  
-    function toggleSubjectSelection() {
-      const subjectSelection = document.getElementById('subject-selection');
-      const subjectDisplay = document.getElementById('subject-display');
-      subjectSelection.style.display = subjectSelection.style.display === 'none' ? 'block' : 'none';
-      subjectDisplay.style.display = subjectDisplay.style.display === 'none' ? 'block' : 'none';
-    }
-  
-    async function loadSubjectMaterials() {
-      const selectedSubjects = await getDataFromBackend('selectedSubjects');
-      const materials = await getDataFromBackend('studyMaterials');
-      const filteredMaterials = materials.filter(material => selectedSubjects.includes(material.subject));
-  
-      const materialList = document.getElementById('material-list');
-      materialList.innerHTML = '';
-  
-      if (filteredMaterials.length === 0) {
-        materialList.innerHTML = '<p>No materials uploaded for the selected subjects.</p>';
-        return;
-      }
-  
-      selectedSubjects.forEach(subject => {
-        const subjectFolder = document.createElement('div');
-        subjectFolder.classList.add('subject-folder');
-        const subjectMaterials = filteredMaterials.filter(material => material.subject === subject);
-  
-        if (subjectMaterials.length > 0) {
-          subjectFolder.innerHTML = `
-            <h3>${subject.charAt(0).toUpperCase() + subject.slice(1).replace('-', ' ')}</h3>
-            ${groupMaterialsByType(subjectMaterials).join('')}
-          `;
-          materialList.appendChild(subjectFolder);
-        }
-      });
-    }
-  
-    function groupMaterialsByType(materials) {
-      const grouped = {};
-  
-      materials.forEach(material => {
-        if (!grouped[material.type]) grouped[material.type] = [];
-        grouped[material.type].push(material);
-      });
-  
-      return Object.keys(grouped).map(type => `
-        <div class="material-category">${type.charAt(0).toUpperCase() + type.slice(1)}</div>
-        <div class="category-items">
-          ${grouped[type].map(material => `
-            <div class="material-item">
-              <strong>${material.title}</strong><br>
-              <a href="${material.link}" target="_blank">View Material</a>
-            </div>
-          `).join('')}
-        </div>
-      `);
-    }
-  
-    document.addEventListener('DOMContentLoaded', () => {
+  } catch (error) {
+    console.error(`Error fetching ${endpoint}:`, error);
+    return [];
+  }
+}
+
+async function saveSelectedSubjects() {
+  const selectedSubjects = Array.from(document.querySelectorAll('input[name="subject"]:checked')).map(input => input.value);
+  try {
+    const response = await fetch('https://infinity-academy.onrender.com/api/selectedSubjects', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ selectedSubjects }),
+    });
+    if (response.ok) {
       updateSubjectDisplay();
       loadSubjectMaterials();
-    });
+    } else {
+      alert('Failed to save selected subjects.');
+    }
+  } catch (error) {
+    console.error('Error saving selected subjects:', error);
+  }
+}
+
+async function updateSubjectDisplay() {
+  const selectedSubjects = await getDataFromBackend('selectedSubjects');
+  const subjectDisplay = document.getElementById('subject-display');
+  const subjectSelection = document.getElementById('subject-selection');
+  const subjectMessage = document.getElementById('subject-message');
+
+  subjectSelection.style.display = 'none';
+  subjectDisplay.style.display = 'block';
+
+  if (selectedSubjects.length > 0) {
+    subjectMessage.textContent = 'Your major subjects: ' + selectedSubjects.join(', ');
+  } else {
+    subjectMessage.textContent = 'You haven\'t selected any subjects yet.';
+  }
+}
+
+    function toggleSubjectSelection() {
+  const subjectSelection = document.getElementById('subject-selection');
+  const subjectDisplay = document.getElementById('subject-display');
+  subjectSelection.style.display = subjectSelection.style.display === 'none' ? 'block' : 'none';
+  subjectDisplay.style.display = subjectDisplay.style.display === 'none' ? 'block' : 'none';
+}
+
+async function loadSubjectMaterials() {
+  const selectedSubjects = await getDataFromBackend('selectedSubjects');
+  const materials = await getDataFromBackend('studyMaterials');
+  const filteredMaterials = materials.filter(material => selectedSubjects.includes(material.subject));
+
+  const materialList = document.getElementById('material-list');
+  materialList.innerHTML = '';
+
+  if (filteredMaterials.length === 0) {
+    materialList.innerHTML = '<p>No materials uploaded for the selected subjects.</p>';
+    return;
+  }
+
+  selectedSubjects.forEach(subject => {
+    const subjectFolder = document.createElement('div');
+    subjectFolder.classList.add('subject-folder');
+    const subjectMaterials = filteredMaterials.filter(material => material.subject === subject);
+
+    if (subjectMaterials.length > 0) {
+      subjectFolder.innerHTML = `
+        <h3>${subject.charAt(0).toUpperCase() + subject.slice(1).replace('-', ' ')}</h3>
+        ${groupMaterialsByType(subjectMaterials).join('')}
+      `;
+      materialList.appendChild(subjectFolder);
+    }
+  });
+}
+
+function groupMaterialsByType(materials) {
+  const grouped = {};
+
+  materials.forEach(material => {
+    if (!grouped[material.type]) grouped[material.type] = [];
+    grouped[material.type].push(material);
+  });
+
+  return Object.keys(grouped).map(type => `
+    <div class="material-category">${type.charAt(0).toUpperCase() + type.slice(1)}</div>
+    <div class="category-items">
+      ${grouped[type].map(material => `
+        <div class="material-item">
+          <strong>${material.title}</strong><br>
+          <a href="${material.link}" target="_blank">View Material</a>
+        </div>
+      `).join('')}
+    </div>
+  `);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  updateSubjectDisplay();
+  loadSubjectMaterials();
+});
+
+async function getDataFromBackend(endpoint) {
+  try {
+    const response = await fetch(`https://infinity-academy.onrender.com/api/${endpoint}`);
+    if (response.ok) {
+      return await response.json();
+    } else {
+      console.error(`Failed to fetch ${endpoint}`);
+      return [];
+    }
+  } catch (error) {
+    console.error(`Error fetching ${endpoint}:`, error);
+    return [];
+  }
+}
+
   </script>
   
 </body>
