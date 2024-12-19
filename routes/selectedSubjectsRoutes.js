@@ -24,5 +24,6 @@ router.get('/selectedSubjects', async (req, res) => {
   }
 });
 
+
 module.exports = router;
 
