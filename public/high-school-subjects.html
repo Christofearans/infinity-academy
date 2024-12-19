@@ -182,11 +182,12 @@ async function updateSubjectDisplay() {
   subjectDisplay.style.display = 'block';
 
   if (selectedSubjects.length > 0) {
-    subjectMessage.textContent = 'Your major subjects: ' + selectedSubjects.join(', ');
+    subjectMessage.textContent = 'Your major subjects: ' + selectedSubjects.map(subject => subject.subjectName).join(', ');
   } else {
     subjectMessage.textContent = 'You haven\'t selected any subjects yet.';
   }
 }
+
 
 
     function toggleSubjectSelection() {
@@ -199,7 +200,7 @@ async function updateSubjectDisplay() {
 async function loadSubjectMaterials() {
   const selectedSubjects = await getDataFromBackend('selectedSubjects');
   const materials = await getDataFromBackend('studyMaterials');
-  const filteredMaterials = materials.filter(material => selectedSubjects.includes(material.subject));
+  const filteredMaterials = materials.filter(material => selectedSubjects.map(subject => subject.subjectName).includes(material.subject));
 
   const materialList = document.getElementById('material-list');
   materialList.innerHTML = '';
@@ -209,20 +210,17 @@ async function loadSubjectMaterials() {
     return;
   }
 
-  selectedSubjects.forEach(subject => {
-    const subjectFolder = document.createElement('div');
-    subjectFolder.classList.add('subject-folder');
-    const subjectMaterials = filteredMaterials.filter(material => material.subject === subject);
-
-    if (subjectMaterials.length > 0) {
-      subjectFolder.innerHTML = `
-        <h3>${subject.charAt(0).toUpperCase() + subject.slice(1).replace('-', ' ')}</h3>
-        ${groupMaterialsByType(subjectMaterials).join('')}
-      `;
-      materialList.appendChild(subjectFolder);
-    }
+  filteredMaterials.forEach(material => {
+    const div = document.createElement('div');
+    div.classList.add('material-item');
+    div.innerHTML = `
+      <strong>${material.title}</strong><br>
+      <a href="${material.link}" target="_blank">View Material</a>
+    `;
+    materialList.appendChild(div);
   });
 }
+
 
 function groupMaterialsByType(materials) {
   const grouped = {};
